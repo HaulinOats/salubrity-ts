@@ -14,3 +14,610 @@ a {
 * {
   box-sizing: border-box;
 }
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* font-family: 'Roboto', sans-serif;
+font-family: 'Rubik', sans-serif; */
+textarea:active,
+input:active,
+button:active,
+.btn:active,
+.btn.active {
+  outline: 0px !important;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+}
+input {
+  font-size: inherit;
+  font-family: inherit;
+}
+textarea:focus,
+input:focus,
+button:focus,
+label:focus {
+  outline: 0px !important;
+  -webkit-appearance: none;
+}
+textarea {
+  font-family: inherit;
+}
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  font-size: 16px;
+  margin: 0;
+  font-family: "Quicksand", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: url("../public/agsquare.png") !important;
+  background-repeat: repeat !important;
+}
+
+label {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+button {
+  background: cadetblue;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px black;
+  color: white;
+  margin-right: 8px;
+  white-space: nowrap;
+  font-size: inherit;
+  cursor: pointer;
+  font-family: inherit;
+}
+button:active {
+  box-shadow: none;
+}
+.vas-container-fluid {
+  width: 98%;
+  padding: 0 1%;
+  padding-top: 50px;
+  margin-right: auto;
+  margin-left: auto;
+}
+select {
+  font-size: inherit;
+  font-family: inherit;
+}
+
+/* Checkbox */
+.vas-main-tabContent input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.vas-btn-confirm {
+  margin: 0 15px;
+  min-width: 70px;
+  padding: 10px 10px;
+}
+.vas-confirm {
+  background: green;
+  color: white;
+}
+.vas-btn-normal {
+}
+.vas-btn-no {
+  background-color: red;
+}
+.vas-btn-yes {
+  background-color: green;
+}
+.vas-main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 98%;
+  height: 45px;
+  background: darkslategrey;
+  color: white;
+  padding: 0 1%;
+  z-index: 10;
+  display: flex;
+}
+.vas-header-left-container,
+.vas-header-right-container {
+  display: flex;
+  align-items: center;
+}
+.vas-header-left-container {
+}
+.vas-header-right-container {
+  margin-left: auto;
+}
+.center-xy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.vas-btn {
+  min-width: 55px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  position: relative;
+  line-height: 25px;
+  padding: 10px;
+  margin-right: 7px;
+  font-size: 100%;
+  font-weight: bold;
+  color: #597490;
+  text-decoration: none;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.8);
+  background: #d8e6f4;
+  background-clip: padding-box;
+  border: 1px solid;
+  border-color: #b2bcc8 #acb6c0 #97abba;
+  border-radius: 3px;
+  background-image: linear-gradient(to bottom, #f1f6ff, #d3dde7 70%, #bfcddc);
+  box-shadow: inset 0 1px white, inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 1px 1px rgba(0, 0, 0, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vas-status-bad {
+  box-shadow: none;
+  background: red;
+  animation-name: blink;
+  animation-duration: 2s;
+  animation-direction: alternate-reverse;
+  animation-iteration-count: infinite;
+}
+@keyframes blink {
+  from {
+    background: red;
+  }
+  to {
+    background: none;
+  }
+}
+.vas-danger {
+  color: red;
+  font-weight: bold;
+}
+.vas-radio-select,
+.vas-checkbox-select {
+  display: none;
+}
+.vas-radio-select:checked + label,
+.vas-radio-select:checked + label:active,
+.vas-checkbox-select:checked + label,
+.vas-checkbox-select:checked + label:active {
+  background: #7d91a9;
+  border-color: #708191 #6d8295 #7b8c9e;
+  background-image: -webkit-linear-gradient(top, #7d91a9, #92a7bc);
+  background-image: -moz-linear-gradient(top, #7d91a9, #92a7bc);
+  background-image: -o-linear-gradient(top, #7d91a9, #92a7bc);
+  background-image: linear-gradient(to bottom, #7d91a9, #92a7bc);
+  -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2),
+    0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.4);
+  color: white;
+  text-shadow: 1px 1px 1px black;
+}
+.vas-number-select {
+  height: 40px;
+  border-radius: 3px;
+  border: none;
+  padding-left: 10px;
+  box-shadow: inset 1px 1px 2px black;
+}
+.vas-select {
+  font-size: inherit;
+  border-radius: 3px;
+  padding: 3px 0;
+  background: white;
+  min-height: 32px;
+  text-transform: capitalize;
+}
+.vas-input {
+  min-height: 28px;
+  border-radius: 3px;
+  border: solid thin darkgrey;
+  background-color: white;
+  transition: background-color 1s;
+}
+.vas-input-success,
+.vas-success {
+  background: lightgreen;
+}
+.vas-input-fail,
+.vas-fail {
+  background: red;
+}
+.vas-table {
+  margin-bottom: 0;
+  background-color: white;
+  width: 100%;
+}
+.vas-table-tr {
+  cursor: pointer;
+  box-shadow: inset 0px -6px 3px -5px steelblue;
+}
+.vas-warn-btn {
+  background: red;
+  color: white;
+}
+.vas-status-2 .vas-warn-btn {
+  background: indianred;
+}
+.vas-custom-input {
+  border: none;
+  border-radius: 4px;
+  height: 40px;
+  padding-left: 5px;
+  box-shadow: inset 1px 1px 1px black;
+  transition: background-color 1s;
+  margin-bottom: 15px;
+}
+/* loading container */
+.vas-loading-container {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 1px black;
+}
+.vas-loading-img {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+.vas-loading-text {
+  text-align: center;
+  color: cadetblue;
+}
+.vas-width-10 {
+  width: 10%;
+}
+.vas-width-15 {
+  width: 15%;
+}
+.vas-width-20 {
+  width: 20%;
+}
+.vas-width-25 {
+  width: 25%;
+}
+.vas-width-30 {
+  width: 30%;
+}
+.vas-width-35 {
+  width: 35%;
+}
+.vas-width-40 {
+  width: 40%;
+}
+.vas-width-45 {
+  width: 45%;
+}
+.vas-width-50 {
+  width: 50%;
+}
+.vas-width-55 {
+  width: 55%;
+}
+.vas-width-60 {
+  width: 60%;
+}
+.vas-width-65 {
+  width: 65%;
+}
+.vas-width-70 {
+  width: 70%;
+}
+.vas-width-75 {
+  width: 75%;
+}
+.vas-width-90 {
+  width: 90%;
+}
+.vas-width-100 {
+  width: 100%;
+}
+.vas-nowrap {
+  white-space: nowrap;
+}
+.vas-uppercase {
+  text-transform: uppercase;
+}
+.vas-capitalize {
+  text-transform: capitalize;
+}
+.vas-button-pressed {
+  box-shadow: none;
+  background: mediumseagreen;
+}
+.vas-block-input,
+.vas-block-container,
+.vas-block-button {
+  display: block;
+  margin-bottom: 10px;
+}
+.vas-call-times-row {
+  border-bottom: dotted 1px black;
+  padding: 1px 0;
+}
+.vas-call-times-row:last-child {
+  border-bottom: none;
+}
+.vas-call-times-left {
+  display: inline-block;
+  font-size: 90%;
+  color: midnightblue;
+  font-weight: bold;
+}
+.vas-call-times-right {
+  float: right;
+}
+.vas-call-comment {
+  margin-bottom: 3px;
+}
+.vas-call-comment:last-child {
+  margin-bottom: 0;
+}
+.vas-call-comment b {
+  font-weight: bold;
+}
+.vas-positive {
+  font-weight: bold;
+  color: green;
+}
+.vas-edit-icon {
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 80%;
+}
+.vas-pointer {
+  cursor: pointer;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.vas-clearfix {
+  clear: both;
+}
+.vas-block {
+  display: block;
+}
+.vas-hide {
+  display: none;
+}
+.vas-inline-block {
+  display: inline-block;
+}
+.vas-status-2 {
+  /* Stat */
+  background: red !important;
+}
+.vas-status-3 {
+  /* On Hold */
+  background: #e39f20 !important;
+}
+.vas-ml-10 {
+  margin-left: 10px;
+}
+.vas-mt-15 {
+  margin-top: 15px;
+}
+.vas-mb-5 {
+  margin-bottom: 5px;
+}
+.vas-ml-5 {
+  margin-left: 5px;
+}
+.vas-open-status {
+  margin: 0 auto;
+  margin-right: 0;
+  font-weight: bold;
+}
+.vas-open-label-blink {
+  display: flex;
+  animation-name: openLabelBlink;
+  animation-duration: 2s;
+  color: white;
+  text-shadow: 0px 0px 2px transparent;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+.vas-open-label-blink:before {
+  content: "\2039";
+  margin-right: 3px;
+}
+.vas-open-label-blink:after {
+  content: "\203A";
+  margin-left: 3px;
+}
+.vas-rotate-180 {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 650px) {
+  body {
+    font-size: 15px;
+  }
+  button {
+    padding: 2%;
+  }
+  .vas-home-container {
+    padding-top: 50px;
+  }
+  .vas-home-main-header {
+    padding: 0 2%;
+    height: 40px;
+  }
+  .vas-home-header-title {
+    font-size: 100%;
+    margin-right: 3%;
+  }
+  .vas-home-nav-item {
+    font-size: 80%;
+  }
+  .vas-table-thead-row,
+  .vas-home-table-tr {
+    font-size: 75%;
+  }
+  .vas-home-nav-tabs {
+    height: 25px;
+  }
+}

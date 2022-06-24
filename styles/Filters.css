@@ -1,0 +1,115 @@
+.vas-filters {
+  display:inline-block;
+  padding-bottom: 5px;
+}
+.vas-filters-filters-container {
+  display:inline;
+  border-radius: 5px;
+}
+.vas-filters-delete-filter{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 175%;
+  border-radius: 50px;
+  width: 25px;
+  height: 25px;
+  border: solid 1px indianred;
+  color: indianred;
+  cursor: pointer;
+  margin-right:5px;
+  user-select: none;
+  background:white;
+  box-shadow:1px 1px 1px black;
+}
+.vas-filters-delete-filter:active{
+  box-shadow: none;
+}
+.vas-filters-delete-filter p {
+  margin-top:-4px;
+}
+.vas-filters-filter-container select{
+  margin-top:3px;
+}
+.vas-filters-add-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 5px 5px 5px;
+  border-radius: 100px;
+  width: 18px;
+  height: 20px;
+  box-shadow: 1px 1px 2px black;
+  background: mediumseagreen;
+  color: white;
+  user-select: none;
+  cursor: pointer;
+  margin:0 5px;
+  text-align: center;
+  font-size: 160%;
+}
+.vas-filters-add-filter:active {
+  box-shadow: none;
+}
+.vas-filters-date-range-container {
+  display:inline-block;
+}
+.vas-filters-date-range-inner {
+  display:inline-block;
+  margin-right:15px;
+}
+.vas-filters-date-label {
+  margin-bottom:5px;
+}
+.vas-filters-datepicker {
+  border: solid 2px darkgrey;
+  border-radius: 5px;
+  height: 25px;
+  padding-left: 5px;
+  width:100px;
+}
+.vas-filters-sumbit-query {
+  display:inline-block;
+  border: none;
+  padding: 9px;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-left:10px;
+  box-shadow: 1px 1px 2px black;
+  background: cadetblue;
+  color: white;
+}
+.vas-filters-outer-filter-container {
+  display: inline-flex;
+  align-items: center;
+  background: #d2d2d2;
+  margin-right: 5px;
+  border-radius: 5px;
+  padding: 3px 5px;
+  margin-bottom: 5px;
+}
+.vas-filters-container-title {
+  margin-bottom:5px;
+}
+.vas-filters-filter-container-inner {
+  display:inline-block;
+  margin-right:5px;
+}
+.vas-filters-reset-filters {
+  background:indianred;
+}
+.vas-filters-filter-title {
+  font-weight: bold;
+  border-left: solid 1px grey;
+  padding-left: 5px;
+}
+.vas-filters-add-filter-container {
+  display:inline-flex;
+  align-items: center;
+}
+.vas-filters-main-filter-select {
+  margin-right:5px;
+}
+.vas-filters-hide-ui {
+  height:15px;
+}

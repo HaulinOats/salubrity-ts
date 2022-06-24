@@ -1,0 +1,447 @@
+.vas-home-container {
+  padding-top: 60px;
+}
+.vas-home-main-header {
+  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: darkslategrey;
+  color: white;
+  width: 100%;
+  padding: 0 15px;
+}
+.vas-home-header-title {
+  font-size: 150%;
+  color: bisque;
+  margin-right: 20px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.vas-home-main-header-left,
+.vas-home-main-header-right {
+  display: inline-flex;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+}
+.vas-home-add-call {
+  margin-right: 0;
+  padding: 7px;
+  border-radius: 3px;
+}
+.vas-home-main-header-right {
+  justify-content: flex-end;
+}
+.vas-home-main-header-user-container {
+  position: relative;
+}
+.vas-home-status-dot {
+  padding: 1px;
+  width: 5px;
+  height: 5px;
+  background: chartreuse;
+  border-radius: 50px;
+  margin-right: 10px;
+  box-shadow: 0px 0px 3px yellow;
+  cursor: pointer;
+}
+.vas-user-offline {
+  background: red;
+  box-shadow: 0px 0px 3px darkorange;
+}
+.vas-home-main-header-user {
+  display: inline-block;
+  text-transform: capitalize;
+  margin-right: 10px;
+  padding-right: 10px;
+  border-right: solid 1px white;
+  cursor: pointer;
+  user-select: none;
+}
+.vas-home-main-header-user b {
+  font-size: 70%;
+  margin-left: 3px;
+}
+.vas-home-user-menu {
+  position: absolute;
+  background: white;
+  color: black;
+  margin-top: 15px;
+  box-shadow: 1px 1px 3px black;
+}
+.vas-home-clickguard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.2;
+}
+.vas-home-user-menu li {
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 14px 5px;
+  border-bottom: solid 1px black;
+}
+.vas-home-user-menu li:hover {
+  color: white;
+  background: cadetblue;
+}
+.vas-home-user-menu li:last-child {
+  border: none;
+}
+.vas-home-main-header-logout {
+  background: darkcyan;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 2px black;
+  margin-right: 0;
+}
+.vas-home-main-header-logout:active {
+  border: none;
+}
+.vas-home-online-users {
+  position: absolute;
+  top: 45px;
+  width: 98%;
+  background: white;
+  transform: translatex(-115%);
+  z-index: 2;
+  transition: transform 0.5s;
+}
+.vas-home-show-online-users {
+  transform: translatex(0%);
+}
+.vas-home-hide-online-users {
+  float: right;
+  padding: 0px 15px 5px 12px;
+  font-size: 300%;
+  cursor: pointer;
+}
+.vas-home-online-users-list {
+  padding: 5px;
+  box-shadow: 1px 1px 3px black;
+}
+.vas-home-online-users-title {
+  font-size: 130%;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: darkslategrey;
+}
+.vas-home-online-users-user {
+  font-size: 105%;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  display: list-item;
+  list-style-type: disc;
+  list-style-position: inside;
+  color: black;
+}
+.vas-home-online-users-user:last-child {
+  border: none;
+}
+.vas-home-nav-tabs {
+  display: flex;
+  background: none;
+  position: relative;
+  border-bottom: none;
+  height: 30px;
+}
+.vas-home-nav-item {
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: inline-block;
+  background: #008b8b;
+  margin-right: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: white;
+  cursor: pointer;
+  line-height: 190%;
+  height: 100%;
+  padding: 0 8px;
+  transition: 1s background-color linear;
+}
+.vas-home-nav-item[data-isactive="true"] {
+  background: cadetblue;
+  color: white;
+}
+.vas-home-nav-item-text {
+  position: relative;
+  z-index: 1;
+}
+.vas-home-nav-item-refresh-bar {
+  height: 100%;
+  width: 0%;
+  background: darkslategrey;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  z-index: 0;
+}
+.vas-home-refresh-bar-activate {
+  animation-name: loading;
+  animation-duration: 1s;
+}
+@keyframes loading {
+  0% {
+    width: 0;
+  }
+  99% {
+    width: 100%;
+  }
+  99.1% {
+    background: transparent;
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+.vas-home-nav-link {
+  border: solid 2px lightgrey;
+}
+.vas-home-nav-link:hover {
+  border: none !important;
+}
+.vas-home-tabContent {
+}
+.vas-home-page-container {
+  display: none;
+}
+.vas-home-page-container[data-isactive="true"] {
+  display: block;
+}
+.vas-nav-link {
+  cursor: pointer;
+}
+.vas-nav-link[aria-selected="false"] {
+  background: darkcyan;
+  color: lightgray;
+  box-shadow: inset 0px -3px 8px -5px black;
+}
+.vas-nav-link.active {
+  border-bottom: 2px solid #5f9ea0 !important;
+  background-color: #5f9ea0 !important;
+  color: white !important;
+  border-color: transparent !important;
+}
+/* Main tab/page  */
+.vas-home-btn-section {
+  margin-right: 15px;
+}
+.vas-home-btn {
+  background-color: white;
+  margin: 5px;
+}
+.vas-home-needle-btn {
+  background: #28a745;
+  color: white;
+}
+.vas-home-discontinue-btn {
+  background: darkblue;
+  color: white;
+}
+.vas-home-sub-btn {
+  border: solid 1px darkgrey;
+}
+.vas-home-btn-active {
+  border: solid 2px #007bff;
+}
+/* queue tab/page */
+.vas-table-job-name {
+  font-weight: bold;
+  color: #4c7e80;
+  font-size: 110%;
+}
+.vas-queue-thead {
+  background: #5f9ea0;
+  color: whitesmoke;
+}
+.vas-queue-table-job-column {
+  max-width: 30%;
+}
+.vas-table-thead-row {
+  display: flex;
+  background: cadetblue;
+  min-height: 15px;
+}
+.vas-table-thead-row div {
+  color: white;
+  display: inline-block;
+  padding: 10px 0 10px 5px;
+}
+.vas-home-table-tr {
+  padding: 8px 0 8px 1%;
+  width: 99%;
+  box-shadow: inset 0px 3px 3px -3px black;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  transition: 1s background-color linear;
+}
+.vas-home-table-job-name {
+  border-bottom: solid 1px grey;
+  padding-bottom: 3px;
+  font-size: 125%;
+  color: darkcyan;
+  display: flex;
+  width: 95%;
+  font-weight: bold;
+}
+.vas-status-2 .vas-home-table-job-name {
+  text-shadow: none;
+  color: white;
+  border-color: white !important;
+}
+.vas-home-table-row-is-open .vas-home-table-job-name {
+  color: white;
+  text-shadow: none;
+  border-color: lightsteelblue;
+}
+.vas-home-table-tr-inner {
+  width: 98%;
+}
+.vas-home-table-tr-inner p {
+  width: 47%;
+  display: inline-flex;
+  align-items: center;
+  padding: 1% 0% 1% 0;
+  border-bottom: solid 1px grey;
+  margin-right: 3%;
+}
+.vas-home-table-tr-inner p:nth-child(3),
+.vas-home-table-tr-inner p:nth-child(4) {
+  border-bottom: none;
+}
+.vas-home-table-row-is-open .vas-home-table-tr-inner p {
+  border-color: lightsteelblue;
+}
+.vas-status-2 .vas-home-table-tr-inner p {
+  border-color: white;
+}
+.vas-home-table-tr-inner p b {
+  font-weight: bold;
+  font-size: 105%;
+  color: darkslategray;
+}
+.vas-home-table-row-is-open .vas-home-table-tr-inner p b {
+  color: white;
+}
+.vas-status-2 .vas-home-table-tr-inner p b,
+.vas-status-3 .vas-home-table-tr-inner p b {
+  color: white;
+}
+.vas-home-table-tr-inner p i {
+  margin: 0 auto;
+  margin-right: 0;
+}
+.vas-queue-addCall {
+  position: absolute;
+  right: 15px;
+  top: 4px;
+  z-index: 1;
+}
+.vas-home-table-row-is-open {
+  background-color: #7990a7;
+  color: white;
+}
+.vas-home-table-row-is-open .vas-table-job-name {
+  color: white;
+}
+.vas-home-cathflow-container {
+}
+.vas-buttons-active-header {
+  margin-left: 10px;
+  font-size: 120%;
+}
+.vas-buttons-active-text {
+  margin-top: 3px;
+  margin-left: 10px;
+  font-size: 110%;
+}
+.vas-reset-btn:active {
+  box-shadow: none;
+}
+.vas-queue-no-items {
+  padding: 15px 0;
+  width: 100%;
+  text-align: center;
+  background: lightblue;
+}
+.vas-home-contact-id {
+  display: block;
+  border: solid thin grey;
+  padding-left: 5px;
+  height: 30px;
+  border-radius: 5px;
+  margin: 10px 0px 10px;
+}
+.vas-home-found-user {
+  color: darkcyan;
+  font-weight: bold;
+  font-size: 140%;
+  margin-bottom: 25px;
+}
+.vas-home-refresh {
+  position: relative;
+  top: 2px;
+  width: 15px;
+  margin-left: 10px;
+  transform: rotate(0);
+}
+.vas-home-complete-procedure-btn {
+  background: seagreen;
+  padding: 10px;
+  font-size: 110%;
+}
+@keyframes openLabelBlink {
+  from {
+    text-shadow: 0px 0px 2px transparent;
+    color: white;
+  }
+  to {
+    text-shadow: 0px 0px 2px black;
+    color: rgb(255, 205, 80);
+  }
+}
+.vas-home-reverse-sort-btn {
+  margin: auto;
+  margin-right: 0;
+  background: teal;
+}
+.vas-status-2 {
+  background: red !important;
+  color: white !important;
+  animation: fadeToRed 1s;
+}
+.vas-status-2 .vas-table-job-name {
+  color: white;
+}
+.vas-is-important-container .vas-warn-btn {
+  background: indianred;
+}
+.vas-home-table-time {
+  font-size: 110%;
+}
+.vas-status-3 .vas-home-table-time {
+  color: white;
+}
+.vas-home-table-time-date {
+  display: block;
+  margin-top: 3px;
+  font-size: 80%;
+}
+.vas-status-3 .vas-home-table-job-name,
+.vas-status-3 .vas-home-table-tr-inner p {
+  border-color: white;
+  color: white;
+}

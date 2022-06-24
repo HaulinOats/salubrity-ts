@@ -1,0 +1,86 @@
+.vas-login-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: #555;
+  font-family: 'Helvetica Neue', Arial, Sans-Serif;
+}
+.vas-login-container h3 {
+  text-align: center;
+  margin-bottom:15px;
+}
+.vas-login-wrap {
+  position: relative;
+  margin: 0 auto;
+  background: #ecf0f1;
+  width: 350px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 10px #333;
+  padding: 15px;
+}
+.vas-login-wrap h2 {
+  text-align: center;
+  font-weight: 200;
+  font-size: 2em;
+  margin-top: 10px;
+  color: #34495e;
+}
+.vas-login-color-border {
+  height: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+}
+.vas-login-color-border-block {
+  display:inline-block;
+  width:20%;
+  height:5px;
+}
+.vas-login-color-border-block-1{
+  background-color:#27ae60;
+}
+.vas-login-color-border-block-2{
+  background-color:#8e44ad;
+}
+.vas-login-color-border-block-3{
+  background-color:#3498db;
+}
+.vas-login-color-border-block-4{
+  background-color:#e74c3c;
+}
+.vas-login-color-border-block-5{
+  background-color:#f1c40f;
+}
+.vas-login-form input {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  border: solid thin darkgrey;
+  border-radius: 3px;
+  height: 30px;
+  padding-left: 5px;
+}
+.vas-login-btn {
+  border: none;
+  background: mediumseagreen;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0 auto;
+  display: block;
+  min-width: 120px;
+  box-shadow: 1px 2px 2px black;
+  margin-bottom:10px;
+}
+.vas-login-btn:active,
+.vas-login-btn:disabled {
+  box-shadow: none;
+}
+.vas-login-forgot {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+}

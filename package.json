@@ -9,11 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "moment": "^2.29.3",
+    "mongoose": "^6.4.0",
+    "mongoose-unique-validator": "^3.1.0",
     "next": "12.1.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-datepicker": "^4.8.0",
+    "react-debounce-input": "^3.3.0",
+    "react-dom": "18.2.0",
+    "react-moment": "^1.1.2"
   },
   "devDependencies": {
+    "@types/mongoose-unique-validator": "^1.0.6",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",

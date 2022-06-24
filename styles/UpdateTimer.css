@@ -1,0 +1,13 @@
+.vas-last-update-container {
+  margin: 0 auto;
+  margin-right: 0;
+}
+.vas-last-update-label {
+  display:inline-block;
+}
+.vas-last-update-timer {
+  display: inline-block;
+  font-size: 110%;
+  min-width: 45px;
+  text-align: right;
+}

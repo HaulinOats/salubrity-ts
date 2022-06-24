@@ -1,0 +1,367 @@
+
+.vas-admin-main-title {
+  border-right: solid 2px darkgrey;
+  padding-right: 10px;
+  color:gold;
+  font-weight: bold;
+  font-size:110%;
+  white-space: nowrap;
+}
+.vas-admin-h3{
+  color: cadetblue;
+  font-size: 120%;
+  text-shadow: 0px 1px 0px black;
+  margin-bottom: 10px;
+  border-bottom: solid 2px grey;
+  padding-bottom: 5px;
+}
+.vas-admin-main-container h4 {
+  font-size: 110%;
+  font-weight: bold;
+  color: midnightblue;
+  margin-bottom: 10px;
+}
+.vas-admin-menu {
+
+}
+.vas-admin-menu-item {
+  display:inline-block;
+  margin:0 10px;
+  cursor: pointer;
+  color:darkgray;
+  white-space: nowrap;
+}
+.vas-admin-menu-item[data-isactive='true'] {
+  color: white;
+  text-shadow: 0px 0px 3px black;
+}
+.vas-admin-username {
+  color: darkturquoise;
+  display: inline-flex;
+  margin: auto;
+  margin-right: 0;
+  white-space: nowrap;
+}
+.vas-admin-logout {
+  display:inline-flex;
+  margin-left:10px;
+  background:cadetblue;
+  color:white;
+  padding:5px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow:1px 1px 2px black;
+  user-select: none;
+}
+.vas-admin-logout:active{
+  border:solid thin coral;
+}
+.vas-admin-main-content {
+  margin-top:45px;
+  padding:5px;
+}
+.vas-admin-page-container {
+  display:none;
+}
+.vas-admin-page-container[data-isactive='true'] {
+  display:block;
+}
+
+/* Users Page */
+.vas-admin-add-user-container label {
+  display:block;
+  margin-top:15px;
+  margin-bottom:5px;
+}
+.vas-admin-add-user-container input[type='text'] {
+  border:solid 2px darkgrey;
+  border-radius: 3px;
+  padding-left:5px;
+  min-width: 300px;
+  height:35px;
+}
+.vas-admin-add-user-container input[type='checkbox']{
+  transform: scale(1.8);
+  margin-left: 4px;
+  margin-top: 5px;
+}
+.vas-admin-create-user {
+  display: block;
+  margin: 15px 0;
+}
+.vas-admin-add-user-notes{
+  
+  margin-top:10px;
+  color:darkgrey;
+  font-style: italic;
+}
+.vas-admin-added-user-row {
+  margin-top:5px;
+}
+.vas-admin-added-user-row b {
+  font-weight:bold;
+}
+.vas-admin-table {
+  width:100%;
+  margin-top:10px;
+}
+.vas-admin-table th{
+  background: darkgrey;
+  padding: 8px 0px 8px 5px;
+  border: solid 2px grey;
+  cursor: pointer;
+}
+.vas-admin-table tr {
+  border-bottom: solid thin grey;
+}
+.vas-admin-table td {
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-left:5px;
+}
+.admin-nostretch {
+  white-space: nowrap;
+}
+.vas-admin-delete-user {
+  text-align: center;
+}
+.vas-admin-delete-user p {
+  width: fit-content;
+  margin: 0 auto;
+  cursor: pointer;
+}
+.vas-admin-manage-users-pw {
+  cursor:pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.vas-admin-no-calls-container {
+  background:lightblue;
+  padding:5px;
+}
+.vas-admin-reverse-sort-btn {
+  padding: 5px 4px;
+  background: lightseagreen;
+  margin: 0 auto;
+  margin-right: 0;
+}
+.vas-admin-custom-item-subfield,
+.vas-admin-custom-item-subvalue {
+  display:inline-block;
+}
+.vas-admin-custom-item-subfield {
+  font-weight: bold;
+  font-size: 90%;
+  color: midnightblue;
+}
+.vas-admin-custom-item-subvalue {
+  float:right;
+  text-transform: capitalize;
+}
+.vas-admin-custom-table-item-comments {
+  padding: 5px;
+  font-size: 90%;
+  border-top: solid 1px darkgrey;
+}
+.vas-admin-custom-table-item-comments p{
+  width:50%;
+  display:inline-block;
+}
+.vas-admin-custom-table-item-comments b{
+  font-weight: bold;
+}
+.vas-admin-col-3-header {
+  font-size: 85%;
+  color: midnightblue;
+  font-weight: bold;
+}
+.vas-admin-filter-container {
+  display:inline-block;
+  margin-right:15px;
+  margin-top:5px;
+}
+.vas-admin-list-table {
+  background:white;
+  border-top:solid 1px black;
+  border-right:solid 1px black;
+}
+.vas-admin-list-table tr{
+  border-bottom:solid 1px black;
+}
+.vas-admin-list-table th {
+  background:cadetblue;
+  color:white;
+  padding:5px;
+  border-left:solid 1px black;
+}
+.vas-admin-list-table td {
+  border-left:solid 1px black;
+  padding:5px;
+}
+.vas-admin-hospital-input-container {
+  margin-bottom:10px;
+}
+.vas-admin-hospital-input-submit {
+  margin-top:10px;
+}
+.vas-admin-query-dropdown-2 option {
+  text-transform: capitalize;
+}
+.vas-admin-custom-table-date {
+  font-size:90%;
+}
+.vas-admin-is-open-container {
+  padding: 10px 5px;
+  font-size: 110%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.vas-admin-is-open-container div{
+  display:inline-block;
+}
+.vas-admin-is-open-container b{
+  font-weight: bold;
+}
+.vas-admin-is-open-container button {
+  float:right;
+}
+.vas-red-button {
+  background:red;
+}
+.vas-admin-order-change {
+  font-size:85%;
+}
+.vas-admin-menu-toggle {
+  white-space: nowrap;
+  cursor:pointer;
+}
+.vas-admin-menu-toggle {
+  display:none;
+  margin-left:10px;
+  padding:8px 0;
+}
+.vas-admin-menu-visible {
+  display: block !important;
+  position: absolute;
+  top: 45px;
+  left: 23%;
+  box-shadow: 0px 0px 3px black;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  background: white;
+  z-index: 1;
+}
+.vas-admin-menu-visible 
+.vas-admin-menu-item {
+  display:block;
+  padding:8px 5px;
+  margin:0;
+  color:black;
+  text-shadow: none;
+}
+.vas-admin-menu-visible 
+.vas-admin-menu-item[data-isactive='true'] {
+  color: green !important;
+  font-weight: bold;
+}
+.vas-admin-menu-visible 
+.vas-admin-menu-item:hover {
+  background:grey;
+  color:white;
+}
+.vas-menu-clickguard {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: black;
+  opacity:.1;
+}
+.vas-admin-aggregation-container {
+  margin-top:15px;
+}
+.vas-admin-aggregation-section {
+  margin-bottom:15px;
+}
+.vas-admin-aggregation-section h2 {
+  font-weight: bold;
+  margin-bottom:5px;
+  text-decoration:underline;
+  font-size:115%;
+}
+.vas-admin-aggregation-inner-container-insertion,
+.vas-admin-aggregation-inner-container-hospitals {
+  display: flex;
+  font-size:110%;
+  border-bottom: dashed 1px grey;
+  width:230px;
+}
+.vas-admin-aggregation-inner-container-left{
+  font-weight: bold;
+}
+.vas-admin-aggregation-inner-container-right{
+  margin:0 auto;
+  margin-right:0;
+}
+.vas-admin-custom-route {
+  margin:10px 0;
+}
+.vas-admin-custom-route button{
+  margin-left:10px;
+}
+.vas-admin-active-btn {
+  line-height: 10px !important;
+}
+.vas-admin-reverse-sort-users {
+  float:right;
+  margin-bottom:8px;
+}
+.vas-admin-active-btn-inactive {
+  background: red !important;
+  color: white !important;
+  border: none !important;
+  text-shadow: none !important;
+}
+.vas-admin-allow-admin-access-dropdown {
+  display:block;
+}
+.vas-admin-update-admin-user-container {
+  margin-bottom:15px;
+}
+.vas-admin-update-admin-credentials-container {
+  padding-top:15px;
+}
+.vas-admin-update-admin-credentials-container h3 {
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 110%;
+  text-decoration: underline;
+}
+.vas-admin-update-admin-credentials-container label {
+  display:block;
+}
+.vas-admin-update-admin-credentials-container input {
+  border-radius: 5px;
+  border: solid 1px black;
+  min-height: 25px;
+  margin-bottom: 10px;
+}
+@media (max-width: 650px) {
+  .vas-admin-menu {
+    display:none;
+  }
+  .vas-admin-menu-toggle {
+    display:inline-block;
+  }
+}
+@media print {
+  .vas-main-header,
+  .vas-filters,
+  .vas-table-thead-row
+  .vas-returned-procedures-show-hide-toggle-container {
+    display:none !important;
+  }
+}

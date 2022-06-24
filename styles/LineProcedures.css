@@ -1,0 +1,75 @@
+.vas-line-procedures-table {
+  background:white;
+}
+.vas-line-procedures-table-header {
+  background:cadetblue;
+  color:white;
+  padding:5px;
+  display:flex;
+  align-items:center;
+}
+.vas-line-procedures-no-calls {
+  padding:10px;
+}
+.vas-line-procedures-table-header-reverse {
+  background:teal;
+  font-size:65%;
+  margin:0 auto;
+  margin-right:0;
+}
+.vas-line-procedures-line-item {
+  display: flex;
+  background:white;
+  font-size:85%;
+  width:99%;
+  border-bottom:solid 1px black;
+  cursor: pointer;
+  padding:2px;
+}
+.vas-line-procedures-main-date {
+  display: block;
+  margin-top: 3px;
+}
+.vas-line-procedures-line-item-left {
+  display:inline-block;
+  width:15%;
+}
+.vas-line-procedures-line-item-right {
+  display:inline-block;
+  width:85%;
+}
+.vas-line-procedures-line-item-field-container {
+  font-size: 85%;
+  width: 48%;
+  display: inline-flex;
+  padding-bottom: 2px;
+  margin: 0 3px;
+  border-bottom: dotted 1px black;
+}
+.vas-line-procedures-line-item-field-container:nth-last-child(1),
+.vas-line-procedures-line-item-field-container:nth-last-child(2) {
+  border:none;
+}
+.vas-line-procedures-line-item-field-container-left {
+  font-weight: bold;
+  font-size: 90%;
+  color: midnightblue;
+}
+.vas-line-procedures-line-item-field-container-right {
+  margin:0 auto;
+  margin-right:0;
+}
+.vas-block-row {
+  margin-top:3px;
+  width:99%;
+}
+.vas-line-procedure-line-item-attention {
+  background:skyblue;
+}
+.vas-line-procedure-line-item-hidden {
+  display:none;
+}
+.vas-line-procedures-open-status {
+  margin-top: 30px !important;
+  padding-left: 5px;
+}
