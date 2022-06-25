@@ -11,7 +11,7 @@ export interface HomeState {
   confirmationType: undefined | string;
   errorArr: string[];
   hospitals: undefined;
-  hospitalsById: undefined | Hospital[];
+  hospitalsById: undefined | { [key: string | number]: any };
   itemsById: undefined;
   lastUpdateHide: boolean;
   lineProcedures: [];

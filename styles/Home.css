@@ -1,5 +1,6 @@
 .vas-home-container {
   padding-top: 60px;
+  margin: 0;
 }
 .vas-home-main-header {
   height: 50px;
@@ -106,7 +107,7 @@
 .vas-home-online-users {
   position: absolute;
   top: 45px;
-  width: 98%;
+  width: 100%;
   background: white;
   transform: translatex(-115%);
   z-index: 2;
@@ -281,7 +282,7 @@
 }
 .vas-home-table-tr {
   padding: 8px 0 8px 1%;
-  width: 99%;
+  width: 100%;
   box-shadow: inset 0px 3px 3px -3px black;
   cursor: pointer;
   display: flex;

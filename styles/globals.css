@@ -208,7 +208,7 @@ button:active {
   box-shadow: none;
 }
 .vas-container-fluid {
-  width: 98%;
+  width: 100%;
   padding: 0 1%;
   padding-top: 50px;
   margin-right: auto;
@@ -248,7 +248,7 @@ select {
   position: fixed;
   top: 0;
   left: 0;
-  width: 98%;
+  width: 100%;
   height: 45px;
   background: darkslategrey;
   color: white;

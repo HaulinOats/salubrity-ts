@@ -9,7 +9,6 @@ export default class EditProcedure extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentRecord: this.props.activeRecord,
       isPostEdit: this.props.activeRecord.completedAt ? true : false,
       isDressingChange: this.props.activeRecord.dressingChangeDate
         ? true
@@ -33,7 +32,6 @@ export default class EditProcedure extends Component {
       dobIsSet: false,
       closeLine: false,
     };
-    this.saveCurrentRecord = this.saveCurrentRecord.bind(this);
     this.hospitalChange = this.hospitalChange.bind(this);
     this.resetSection = this.resetSection.bind(this);
     this.toggleConsultation = this.toggleConsultation.bind(this);
@@ -90,7 +88,7 @@ export default class EditProcedure extends Component {
 
   changeCustomInput(e, fieldName, type) {
     let fieldValue;
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     switch (type) {
       case "number":
         fieldValue = Number(e.target.value);
@@ -104,14 +102,14 @@ export default class EditProcedure extends Component {
   }
 
   changeStatus(e) {
-    let activeRecord = this.state.currentRecord;
+    let activeRecord = this.props.activeRecord;
     if (activeRecord.status === 3) {
       //Currently On Hold
       activeRecord.createdAt = new Date().toISOString();
       activeRecord.startTime = new Date().toISOString();
     }
     activeRecord.status = Number(e.target.value);
-    this.setState({ activeRecord }, this.saveCurrentRecord);
+    this.setState({ activeRecord }, this.props.saveCurrentRecord);
   }
 
   checkSiblings(e) {
@@ -152,7 +150,7 @@ export default class EditProcedure extends Component {
   }
 
   completeProcedure() {
-    if (this.state.currentRecord.completedAt) {
+    if (this.props.activeRecord.completedAt) {
       this.updateProcedure();
     } else {
       this.saveNewProcedure();
@@ -177,7 +175,7 @@ export default class EditProcedure extends Component {
     });
 
     //UPDATE
-    if (this.state.currentRecord.insertionLength > 0) {
+    if (this.props.activeRecord.insertionLength > 0) {
       //push insertion length itemId (70) into procedure's object IDs
       if (procedureObj["8"]) {
         procedureObj["8"].push(70);
@@ -216,12 +214,12 @@ export default class EditProcedure extends Component {
 
   getConfirmation(isConfirmed) {
     if (isConfirmed) {
-      // let currentRecord = this.state.currentRecord;
+      // let currentRecord = this.props.activeRecord;
       switch (this.state.confirmationType) {
         case "delete-call":
           axios
             .post("/api/main", {
-              _id: this.state.currentRecord._id,
+              _id: this.props.activeRecord._id,
               path: "/delete-call",
             })
             .then((resp) => {
@@ -253,7 +251,7 @@ export default class EditProcedure extends Component {
   }
 
   hospitalChange(e) {
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     if (e.target.value !== "") {
       currentRecord.hospital = Number(e.target.value);
       if (currentRecord.hospital !== 6) {
@@ -262,7 +260,7 @@ export default class EditProcedure extends Component {
     } else {
       currentRecord.hospital = null;
     }
-    this.setState({ currentRecord }, this.saveCurrentRecord);
+    this.setState({ currentRecord }, this.props.saveCurrentRecord);
   }
 
   inputLiveUpdate(e, field) {
@@ -270,7 +268,7 @@ export default class EditProcedure extends Component {
     inputEl.classList.add("vas-input-success");
 
     let targetValue = e.target.value;
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
 
     if (e.target.type === "number") {
       currentRecord[field] = Number(targetValue);
@@ -286,18 +284,18 @@ export default class EditProcedure extends Component {
         inputEl.classList.remove("vas-input-success");
       }, 1000);
       // inputEl.classList.remove('vas-input-success');
-      this.saveCurrentRecord();
+      this.props.saveCurrentRecord();
     });
   }
 
   orderSelect(e) {
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     if (e.target.value === "") {
       currentRecord.orderChange = null;
     } else {
       currentRecord.orderChange = Number(e.target.value);
     }
-    this.setState({ currentRecord }, this.saveCurrentRecord);
+    this.setState({ currentRecord }, this.props.saveCurrentRecord);
   }
 
   procedureSaved(isEdit) {
@@ -333,15 +331,15 @@ export default class EditProcedure extends Component {
 
     if (
       !proceduresObj.itemIds.length &&
-      !this.state.currentRecord.wasConsultation
+      !this.props.activeRecord.wasConsultation
     ) {
       errors +=
         "- You must select at least 1 procedure or confirm consultation\n";
     }
 
     if (
-      this.state.currentRecord.hospital === 6 &&
-      this.state.currentRecord.dob === null
+      this.props.activeRecord.hospital === 6 &&
+      this.props.activeRecord.dob === null
     ) {
       errors +=
         "- Please enter patient's date of birth in the 'hospital' section \n";
@@ -350,7 +348,7 @@ export default class EditProcedure extends Component {
     if (
       isLineType &&
       !this.state.closeLine &&
-      this.state.currentRecord.hospital === "UPDATE"
+      this.props.activeRecord.hospital === "UPDATE"
     ) {
       //Erlanger Main
       if (!this.state.dressingChangeDateIsSet && !this.state.isPostEdit) {
@@ -360,16 +358,16 @@ export default class EditProcedure extends Component {
 
     if (isPortAccess) {
       if (
-        !this.state.currentRecord.mrn ||
-        String(this.state.currentRecord.mrn).length < 5 ||
-        String(this.state.currentRecord.mrn).length > 7
+        !this.props.activeRecord.mrn ||
+        String(this.props.activeRecord.mrn).length < 5 ||
+        String(this.props.activeRecord.mrn).length > 7
       ) {
         errors +=
           "- You must enter and Medical Record Number and it must be between 5 and 7 digits\n";
       }
       if (
-        !this.state.currentRecord.patientName ||
-        this.state.currentRecord.patientName.length < 7
+        !this.props.activeRecord.patientName ||
+        this.props.activeRecord.patientName.length < 7
       ) {
         errors +=
           "- You must enter a patient name and it must be at least 7 characters in length\n";
@@ -377,47 +375,44 @@ export default class EditProcedure extends Component {
     }
 
     if (isInsertionProcedure) {
-      if (this.state.currentRecord.insertionLength < 1) {
+      if (this.props.activeRecord.insertionLength < 1) {
         errors +=
           "- You must enter an insertion length > 0 if selecting an insertion type\n";
       }
       if (
-        !this.state.currentRecord.hospital ||
-        this.state.currentRecord.hospital < 1
+        !this.props.activeRecord.hospital ||
+        this.props.activeRecord.hospital < 1
       ) {
         errors += "- You must select a hospital\n";
       }
       if (
-        !this.state.currentRecord.mrn ||
-        String(this.state.currentRecord.mrn).length < 5 ||
-        String(this.state.currentRecord.mrn).length > 7
+        !this.props.activeRecord.mrn ||
+        String(this.props.activeRecord.mrn).length < 5 ||
+        String(this.props.activeRecord.mrn).length > 7
       ) {
         errors +=
           "- You must enter and Medical Record Number and it must be between 5 and 7 digits\n";
       }
       if (
-        !this.state.currentRecord.patientName ||
-        this.state.currentRecord.patientName.length < 7
+        !this.props.activeRecord.patientName ||
+        this.props.activeRecord.patientName.length < 7
       ) {
         errors +=
           "- You must enter a patient name and it must be at least 7 characters in length\n";
       }
       if (
-        !this.state.currentRecord.provider ||
-        !this.state.currentRecord.provider.length
+        !this.props.activeRecord.provider ||
+        !this.props.activeRecord.provider.length
       ) {
         errors += "- You must enter a provider name\n";
       }
     }
 
-    if (
-      !this.state.currentRecord.room ||
-      !this.state.currentRecord.room.length
-    ) {
+    if (!this.props.activeRecord.room || !this.props.activeRecord.room.length) {
       errors += "- Room number field cannot be empty\n";
     }
 
-    if (this.state.currentRecord.status === 3) {
+    if (this.props.activeRecord.status === 3) {
       errors +=
         "- Cannot submit a call that is 'on hold'. Change status from dropdown menu at start of form.";
     }
@@ -500,14 +495,14 @@ export default class EditProcedure extends Component {
         });
     }
 
-    this.saveCurrentRecord();
+    this.props.saveCurrentRecord();
     this.props.refreshUserSession();
   }
 
   returnToQueue() {
     axios
       .post("/api/main", {
-        _id: this.state.currentRecord._id,
+        _id: this.props.activeRecord._id,
         path: "/set-call-as-unopen",
       })
       .then((resp) => {
@@ -523,44 +518,20 @@ export default class EditProcedure extends Component {
     this.props.refreshUserSession();
   }
 
-  saveCurrentRecord() {
-    let currentRecord = this.state.currentRecord;
-    currentRecord.updatedBy = this.props.currentUser.userId;
-    currentRecord.updatedAt = new Date().toISOString();
-    this.setState({ currentRecord }, () => {
-      axios
-        .post("/api/main", {
-          currentRecord: this.state.currentRecord,
-          path: "/save-call",
-        })
-        .then((resp) => {
-          if (resp.data.error || resp.data._message) {
-            console.log(resp.data);
-          } else {
-            console.log("active call saved");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      this.props.refreshUserSession();
-    });
-  }
-
   saveNewProcedure() {
     let proceduresObj = this.createProcedureObject();
     // console.log(proceduresObj);
     if (this.procedureVerified(proceduresObj)) {
       let completionTime = new Date();
-      let callTime = new Date(this.state.currentRecord.createdAt);
-      let startTime = new Date(this.state.currentRecord.startTime);
+      let callTime = new Date(this.props.activeRecord.createdAt);
+      let startTime = new Date(this.props.activeRecord.startTime);
       let callObj = {
         newCallObj: {
-          _id: this.state.currentRecord._id,
+          _id: this.props.activeRecord._id,
           proceduresDone: proceduresObj.procedureArr,
           procedureIds: proceduresObj.procedureIds,
           itemIds: proceduresObj.itemIds,
-          completedBy: Number(this.props.currentUser.userId),
+          completedBy: Number(this.props.user.userId),
           completedAt: completionTime.toISOString(),
           procedureTime: completionTime - startTime,
           responseTime: startTime - callTime,
@@ -634,35 +605,35 @@ export default class EditProcedure extends Component {
   }
 
   toggleConsultation() {
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     currentRecord.wasConsultation = !currentRecord.wasConsultation;
-    this.setState({ currentRecord }, this.saveCurrentRecord);
+    this.setState({ currentRecord }, this.props.saveCurrentRecord);
   }
 
   updateProcedure() {
     let proceduresObj = this.createProcedureObject();
     if (this.procedureVerified(proceduresObj)) {
-      let updatedRecord = this.state.currentRecord;
+      let updatedRecord = this.props.activeRecord;
       updatedRecord.proceduresDone = proceduresObj.procedureArr;
       updatedRecord.procedureIds = proceduresObj.procedureIds;
       updatedRecord.itemIds = proceduresObj.itemIds;
       updatedRecord.openBy = null;
       this.setState({ currentRecord: updatedRecord }, () => {
-        this.saveCurrentRecord();
+        this.props.saveCurrentRecord();
         this.procedureSaved(true);
       });
     }
   }
 
   handleNeedSelect(e) {
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     if (e.target.value.toLowerCase() === "custom") {
       currentRecord.customJob = "Custom Job";
     } else {
       currentRecord.customJob = null;
     }
     currentRecord.job = e.target.value;
-    this.setState({ currentRecord }, this.saveCurrentRecord);
+    this.setState({ currentRecord }, this.props.saveCurrentRecord);
   }
 
   saveDressingChangeDate(e) {
@@ -678,13 +649,13 @@ export default class EditProcedure extends Component {
   }
 
   saveDobDate() {
-    let currentRecord = this.state.currentRecord;
+    let currentRecord = this.props.activeRecord;
     currentRecord.dob = this.state.dob;
     this.setState(
       {
         currentRecord,
       },
-      this.saveCurrentRecord
+      this.props.saveCurrentRecord
     );
   }
 
@@ -718,12 +689,12 @@ export default class EditProcedure extends Component {
             : "")
         }
       >
-        {this.state.currentRecord && (
+        {this.props.activeRecord && (
           <span>
             <header
               className={
                 "vas-edit-procedure-record-header vas-status-" +
-                this.state.currentRecord.status
+                this.props.activeRecord.status
               }
             >
               {this.state.isPostEdit && (
@@ -739,7 +710,7 @@ export default class EditProcedure extends Component {
               <p className="vas-edit-procedure-record-header-text">
                 <select
                   className="vas-modal-add-call-input"
-                  defaultValue={this.state.currentRecord.job}
+                  defaultValue={this.props.activeRecord.job}
                   onChange={this.handleNeedSelect}
                 >
                   {this.props.callNeeds &&
@@ -751,14 +722,14 @@ export default class EditProcedure extends Component {
                       );
                     })}
                 </select>
-                {this.state.currentRecord.customJob && (
+                {this.props.activeRecord.customJob && (
                   <DebounceInput
                     type="text"
                     className="vas-edit-procedure-live-edit-input vas-edit-procedure-custom-job-input vas-block"
                     debounceTimeout={750}
                     value={
-                      this.state.currentRecord.customJob
-                        ? this.state.currentRecord.customJob
+                      this.props.activeRecord.customJob
+                        ? this.props.activeRecord.customJob
                         : ""
                     }
                     onChange={(e) => {
@@ -774,8 +745,8 @@ export default class EditProcedure extends Component {
                   type="text"
                   debounceTimeout={750}
                   value={
-                    this.state.currentRecord.room
-                      ? this.state.currentRecord.room
+                    this.props.activeRecord.room
+                      ? this.props.activeRecord.room
                       : ""
                   }
                   onChange={(e) => {
@@ -787,7 +758,7 @@ export default class EditProcedure extends Component {
                 <p className="vas-edit-procedure-status-text">Status:</p>
                 <select
                   className="vas-select"
-                  value={this.state.currentRecord.status}
+                  value={this.props.activeRecord.status}
                   onChange={this.changeStatus}
                 >
                   {this.props.statusById.options.map((option) => {
@@ -800,26 +771,26 @@ export default class EditProcedure extends Component {
                 </select>
               </div>
               {this.props.usersById &&
-                this.props.usersById[this.state.currentRecord.completedBy] && (
+                this.props.usersById[this.props.activeRecord.completedBy] && (
                   <div className="vas-edit-procedure-completed-by-container">
                     <p>
                       <b>Completed By: </b>
-                      {this.state.currentRecord.completedBy
+                      {this.props.activeRecord.completedBy
                         ? this.props.usersById[
-                            this.state.currentRecord.completedBy
+                            this.props.activeRecord.completedBy
                           ].fullname
                         : "N/A"}
                     </p>
                   </div>
                 )}
               {this.props.usersById &&
-                this.props.usersById[this.state.currentRecord.updatedBy] && (
+                this.props.usersById[this.props.activeRecord.updatedBy] && (
                   <div className="vas-edit-procedure-completed-by-container">
                     <p>
                       <b>Updated By: </b>
-                      {this.state.currentRecord.updatedBy
+                      {this.props.activeRecord.updatedBy
                         ? this.props.usersById[
-                            this.state.currentRecord.updatedBy
+                            this.props.activeRecord.updatedBy
                           ].fullname
                         : "N/A"}
                     </p>
@@ -869,8 +840,8 @@ export default class EditProcedure extends Component {
                     className="vas-edit-procedure-add-comments"
                     debounceTimeout={750}
                     value={
-                      this.state.currentRecord.preComments
-                        ? this.state.currentRecord.preComments
+                      this.props.activeRecord.preComments
+                        ? this.props.activeRecord.preComments
                         : ""
                     }
                     onChange={(e) => {
@@ -908,8 +879,8 @@ export default class EditProcedure extends Component {
                       //disable selecting/deselecting line procedure options by normal users when editing a dressing change
                       if (
                         procedure.procedureId === 8 &&
-                        this.state.currentRecord.dressingChangeDate &&
-                        this.props.currentUser.role === "user"
+                        this.props.activeRecord.dressingChangeDate &&
+                        this.props.user.role === "user"
                       ) {
                         willDisable = true;
                       }
@@ -964,7 +935,7 @@ export default class EditProcedure extends Component {
                                           group.groupName.replace(/\s/g, "")
                                         }
                                         defaultChecked={
-                                          this.state.currentRecord.itemIds.indexOf(
+                                          this.props.activeRecord.itemIds.indexOf(
                                             itemId
                                           ) > -1
                                             ? true
@@ -1008,7 +979,7 @@ export default class EditProcedure extends Component {
                                           this.props.itemsById[itemId].value
                                         }
                                         value={
-                                          this.state.currentRecord[
+                                          this.props.activeRecord[
                                             group.fieldName
                                           ]
                                         }
@@ -1036,8 +1007,8 @@ export default class EditProcedure extends Component {
                             debounceTimeout={750}
                             type="number"
                             value={
-                              this.state.currentRecord.mrn
-                                ? this.state.currentRecord.mrn
+                              this.props.activeRecord.mrn
+                                ? this.props.activeRecord.mrn
                                 : ""
                             }
                             onChange={(e) => {
@@ -1054,8 +1025,8 @@ export default class EditProcedure extends Component {
                             debounceTimeout={750}
                             type="text"
                             value={
-                              this.state.currentRecord.patientName
-                                ? this.state.currentRecord.patientName
+                              this.props.activeRecord.patientName
+                                ? this.props.activeRecord.patientName
                                 : ""
                             }
                             onChange={(e) => {
@@ -1067,7 +1038,7 @@ export default class EditProcedure extends Component {
                     )}
                     {procedure.procedureId === 8 && (
                       <span>
-                        {this.state.currentRecord.insertedBy && (
+                        {this.props.activeRecord.insertedBy && (
                           <span>
                             <p className="vas-edit-procedure-insertedBy-label">
                               Placement Inserted By:
@@ -1076,7 +1047,7 @@ export default class EditProcedure extends Component {
                               type="text"
                               className="vas-input vas-custom-input vas-edit-procedure-insertedBy-input"
                               debounceTimeout={500}
-                              value={this.state.currentRecord.insertedBy}
+                              value={this.props.activeRecord.insertedBy}
                               onChange={(e) => {
                                 this.inputLiveUpdate(e, "insertedBy");
                               }}
@@ -1095,8 +1066,8 @@ export default class EditProcedure extends Component {
                                 debounceTimeout={750}
                                 type="number"
                                 value={
-                                  this.state.currentRecord.mrn
-                                    ? this.state.currentRecord.mrn
+                                  this.props.activeRecord.mrn
+                                    ? this.props.activeRecord.mrn
                                     : ""
                                 }
                                 onChange={(e) => {
@@ -1111,8 +1082,8 @@ export default class EditProcedure extends Component {
                                 debounceTimeout={750}
                                 type="text"
                                 value={
-                                  this.state.currentRecord.patientName
-                                    ? this.state.currentRecord.patientName
+                                  this.props.activeRecord.patientName
+                                    ? this.props.activeRecord.patientName
                                     : ""
                                 }
                                 onChange={(e) => {
@@ -1128,8 +1099,8 @@ export default class EditProcedure extends Component {
                                 debounceTimeout={750}
                                 type="text"
                                 value={
-                                  this.state.currentRecord.provider
-                                    ? this.state.currentRecord.provider
+                                  this.props.activeRecord.provider
+                                    ? this.props.activeRecord.provider
                                     : ""
                                 }
                                 onChange={(e) => {
@@ -1145,7 +1116,7 @@ export default class EditProcedure extends Component {
                     {(procedure.procedureId === 4 ||
                       procedure.procedureId === 8) &&
                       this.state.willSetDressingChangeDate &&
-                      this.state.currentRecord.hospital === "UPDATE" && (
+                      this.props.activeRecord.hospital === "UPDATE" && (
                         <span>
                           <div className="vas-edit-procedure-inner-container-row">
                             <h3>Future Dressing Change Date</h3>
@@ -1184,8 +1155,8 @@ export default class EditProcedure extends Component {
                 <select
                   className="vas-select"
                   value={
-                    this.state.currentRecord.orderChange
-                      ? this.state.currentRecord.orderChange
+                    this.props.activeRecord.orderChange
+                      ? this.props.activeRecord.orderChange
                       : ""
                   }
                   onChange={this.orderSelect}
@@ -1224,7 +1195,7 @@ export default class EditProcedure extends Component {
                   type="checkbox"
                   className="vas-radio-select vas-edit-procedure-consultation-input"
                   id="consultation"
-                  defaultChecked={this.state.currentRecord.wasConsultation}
+                  defaultChecked={this.props.activeRecord.wasConsultation}
                   onChange={this.toggleConsultation}
                   name="consultation"
                 />
@@ -1246,8 +1217,8 @@ export default class EditProcedure extends Component {
                 <select
                   className="vas-select"
                   value={
-                    this.state.currentRecord.hospital
-                      ? this.state.currentRecord.hospital
+                    this.props.activeRecord.hospital
+                      ? this.props.activeRecord.hospital
                       : ""
                   }
                   onChange={this.hospitalChange}
@@ -1262,7 +1233,7 @@ export default class EditProcedure extends Component {
                       );
                     })}
                 </select>
-                {this.state.currentRecord.hospital === 6 && (
+                {this.props.activeRecord.hospital === 6 && (
                   <div className="vas-edit-procedure-dob-container">
                     <h3>Patient Date of Birth (MM/DD/YYYY):</h3>
                     <span className="vas-inline-block">
@@ -1294,8 +1265,8 @@ export default class EditProcedure extends Component {
                   className="vas-edit-procedure-add-comments"
                   debounceTimeout={750}
                   value={
-                    this.state.currentRecord.addComments
-                      ? this.state.currentRecord.addComments
+                    this.props.activeRecord.addComments
+                      ? this.props.activeRecord.addComments
                       : ""
                   }
                   onChange={(e) => {
@@ -1304,7 +1275,7 @@ export default class EditProcedure extends Component {
                 />
               </div>
             </div>
-            {this.state.currentRecord.dressingChangeDate &&
+            {this.props.activeRecord.dressingChangeDate &&
               !this.state.closeLine && (
                 <div className="vas-edit-procedure-inner-container vas-edit-procedure-important vas-block">
                   <header className="vas-edit-procedure-inner-container-header">
@@ -1350,7 +1321,7 @@ export default class EditProcedure extends Component {
         {this.state.modalIsOpen && (
           <Modal
             isConfirmation={this.state.modalConfirmation}
-            currentUser={this.state.currentUser}
+            user={this.props.user}
             getConfirmation={this.getConfirmation}
             closeModal={this.closeModal}
             modalTitle={this.state.modalTitle}

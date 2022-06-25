@@ -5,6 +5,22 @@ export const getDateFromObjectId = (objId) => {
 };
 
 export default {
+  getItemData: async (openBy) => {
+    try {
+      fetch("/api/main", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: "/get-item-data",
+          openBy,
+        }),
+      });
+    } catch (err) {
+      return err;
+    }
+  },
   getAllUsers: async () => {
     return new Promise((resolve, reject) => {
       axios
@@ -264,7 +280,7 @@ export default {
   getOpenCallForUser: (userId) => {
     return new Promise((resolve, reject) => {
       axios
-        .post("/api/main", { openBy: userId, path: "/get-open-call-for-user" })
+        .post("/api/main", { userId, path: "/get-open-call-for-user" })
         .then((resp) => {
           if (resp.data.error || resp.data._message) {
             reject(resp.data);

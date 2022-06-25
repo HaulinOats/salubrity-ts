@@ -51,7 +51,7 @@ export default class Modal extends Component {
 
   render() {
     return (
-      <div className="vas-modal-container" data-isOpen={this.state.isOpen}>
+      <div className="vas-modal-container" data-isopen={this.state.isOpen}>
         <div
           className="vas-modal-clickguard"
           onClick={(e) => {

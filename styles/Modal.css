@@ -6,17 +6,17 @@
   height: 100%;
   z-index: 2000;
 }
-.vas-modal-container[data-isOpen=false]{
-  display:none;
+.vas-modal-container[data-isopen="false"] {
+  display: none;
 }
 .vas-modal-clickguard {
   position: absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:black;
-  opacity:0.5;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.5;
 }
 .vas-modal-content {
   position: relative;
@@ -28,14 +28,13 @@
 }
 .vas-modal-content-add-call {
   top: 5%;
-  height:90%;
+  height: 90%;
 }
 .vas-modal-content-normal {
-  top:15%;
+  top: 15%;
 }
-.vas-modal-content-normal 
-.vas-modal-content-main{
-  border:none;
+.vas-modal-content-normal .vas-modal-content-main {
+  border: none;
 }
 .vas-modal-content-header {
   display: flex;
@@ -48,19 +47,19 @@
   box-shadow: inset 0px -5px 6px -6px black;
 }
 .vas-modal-header-text {
-  width:93%;
+  width: 93%;
 }
 .vas-modal-content-main {
   padding: 2%;
   white-space: pre-line;
   overflow-y: auto;
-  height:75%;
+  height: 75%;
   border-bottom: solid 1px grey;
 }
 .vas-modal-content-main-add-call {
-  height:93%;
-  padding:0;
-  overflow:hidden;
+  height: 93%;
+  padding: 0;
+  overflow: hidden;
 }
 .vas-modal-message {
   line-height: 140%;
@@ -73,38 +72,37 @@
   margin-right: 0;
 }
 .vas-modal-content-inner {
-  display:block;
-  width:100%;
-  height:100%;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .vas-modal-cancel,
 .vas-modal-confirm {
-
 }
 .vas-modal-cancel {
-  margin-right:15px;
-  background:red;
+  margin-right: 15px;
+  background: red;
 }
 .vas-modal-confirm {
-  background:green;
+  background: green;
 }
 .vas-modal-add-call-row-block {
-  display:block;
-  width:100%;
-  margin-bottom:15px;
-  margin-right:15px;
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  margin-right: 15px;
 }
 .vas-modal-add-call-row-inner {
   margin-right: 15px;
   display: inline-block;
-  margin-bottom:15px;
+  margin-bottom: 15px;
 }
 .vas-modal-add-call-row-block p,
 .vas-modal-add-call-row-inner p {
-  margin-bottom:5px;
+  margin-bottom: 5px;
 }
 .vas-modal-add-call-input {
-  font-size:inherit;
+  font-size: inherit;
   display: inline-block;
   border-radius: 3px;
   border: none;
@@ -145,9 +143,9 @@
   margin-top: 20px;
 }
 .vas-modal-custom-input {
-  width:100%;
+  width: 100%;
 }
 .vas-modal-is-important {
-  box-shadow:none;
-  background:seagreen;
+  box-shadow: none;
+  background: seagreen;
 }

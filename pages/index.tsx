@@ -116,7 +116,10 @@ const Home: NextPage = () => {
 
   const toggleUserAvailability = () => {
     axios
-      .post("/toggle-user-availability", { _id: homeState.user?._id })
+      .post("/api/main", {
+        _id: homeState.user?._id,
+        path: "/toggle-user-availability",
+      })
       .then((resp) => {
         setHomeState({
           ...homeState,
@@ -265,7 +268,7 @@ const Home: NextPage = () => {
   };
 
   const stateLoadCalls = async (state: any) => {
-    let newState = state;
+    let newState = { ...state };
 
     try {
       //get users
@@ -458,23 +461,43 @@ const Home: NextPage = () => {
   };
 
   const selectJob = (job: any) => {
+    console.log(job);
     if (!homeState.activeRecord) {
       if (job.openBy) {
-        if (job.openBy === homeState.user?.userId) {
-          setHomeState({ ...homeState, activeRecord: job });
-        } else {
+        if (job.openBy !== homeState.user?.userId) {
           setHomeState({
             ...homeState,
             modalIsOpen: true,
             modalTitle: "Record Already Open",
             modalMessage: `This record is currently opened by someone else: ${job.openBy} `,
           });
+        } else {
+          axios
+            .post("/api/main", {
+              _id: job._id,
+              userId: homeState.user?.userId,
+              path: "/set-call-as-open",
+            })
+            .then((resp) => {
+              if (resp.data.error || resp.data._message) {
+              } else {
+                setHomeState({
+                  ...homeState,
+                  activeRecord: resp.data,
+                  activeHomeTab: "open",
+                });
+              }
+            })
+            .catch((err) => {
+              addToErrorArray(err);
+            });
         }
       } else {
         axios
-          .post("/set-call-as-open", {
+          .post("/api/main", {
             _id: job._id,
             userId: homeState.user?.userId,
+            path: "/set-call-as-open",
           })
           .then((resp) => {
             if (resp.data.error || resp.data._message) {
@@ -531,6 +554,28 @@ const Home: NextPage = () => {
       linesSortBy: e.target.value,
       lineProcedures,
     });
+  };
+
+  const saveCurrentRecord = (record: any) => {
+    let currentRecord = { ...record };
+    currentRecord.updatedBy = homeState.user?.userId;
+    currentRecord.updatedAt = new Date().toISOString();
+    axios
+      .post("/api/main", {
+        currentRecord,
+        path: "/save-call",
+      })
+      .then((resp) => {
+        if (resp.data.error || resp.data._message) {
+          console.log(resp.data);
+          setHomeState({ ...homeState, activeRecord: currentRecord });
+        } else {
+          console.log("active call saved");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   if (!homeState.user)
@@ -762,6 +807,7 @@ const Home: NextPage = () => {
                     closeRecordCallback={closeRecordCallback}
                     user={homeState.user}
                     refreshUserSession={refreshUserSession}
+                    saveCurrentRecord={saveCurrentRecord}
                   />
                 )}
             </div>
