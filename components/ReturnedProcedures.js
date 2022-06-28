@@ -8,7 +8,7 @@ export default class ReturnedProcedures extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queriedProcedures: this.props.queriedProcedures,
+      completedCalls: this.props.completedCalls,
       hospitalAgg: this.props.hospitalAgg,
       insertionAgg: this.props.insertionAgg,
     };
@@ -28,17 +28,17 @@ export default class ReturnedProcedures extends Component {
       {
         insertionAgg: nextProps.insertionAgg,
         hospitalAgg: nextProps.hospitalAgg,
-        queriedProcedures: nextProps.queriedProcedures,
+        completedCalls: nextProps.completedCalls,
       },
       this.aggregateData
     );
   }
 
   aggregateData() {
-    let queriedProcedures = this.state.queriedProcedures;
+    let completedCalls = this.state.completedCalls;
     let hospitalObj = {};
 
-    queriedProcedures.forEach((procedure, idx) => {
+    completedCalls.forEach((procedure, idx) => {
       //aggregate hospitals
       if (hospitalObj.hasOwnProperty(procedure.hospital)) {
         hospitalObj[procedure.hospital].count += 1;
@@ -52,16 +52,16 @@ export default class ReturnedProcedures extends Component {
   }
 
   sortByOnChange(e) {
-    let queriedProcedures = this.state.queriedProcedures;
+    let completedCalls = this.state.completedCalls;
     if (e.target.value !== "callTime") {
-      queriedProcedures.sort((a, b) => {
+      completedCalls.sort((a, b) => {
         if (a[e.target.value] < b[e.target.value]) return -1;
         if (a[e.target.value] > b[e.target.value]) return 1;
         return 0;
       });
-      this.setState({ queriedProcedures });
+      this.setState({ completedCalls });
     } else {
-      queriedProcedures.sort((a, b) => {
+      completedCalls.sort((a, b) => {
         if (
           helpers.getDateFromObjectId(a._id) >
           helpers.getDateFromObjectId(b._id)
@@ -78,9 +78,9 @@ export default class ReturnedProcedures extends Component {
   }
 
   toggleSort() {
-    let queriedProcedures = this.state.queriedProcedures;
-    queriedProcedures.reverse();
-    this.setState({ queriedProcedures });
+    let completedCalls = this.state.completedCalls;
+    completedCalls.reverse();
+    this.setState({ completedCalls });
   }
 
   toggleShowRecord(e) {
@@ -96,7 +96,7 @@ export default class ReturnedProcedures extends Component {
   render() {
     return (
       <div className="vas-table vas-returned-procedures-table">
-        {this.state.queriedProcedures.length < 1 && (
+        {this.state.completedCalls.length < 1 && (
           <div className="vas-returned-procedures-no-calls-container">
             <p>No completed calls for that query</p>
           </div>
@@ -105,7 +105,7 @@ export default class ReturnedProcedures extends Component {
           <span>
             <div className="vas-returned-procedures-aggregations">
               <p className="vas-returned-procedures-records-returned">
-                {this.state.queriedProcedures.length} Records Returned
+                {this.state.completedCalls.length} Records Returned
               </p>
               <div className="vas-returned-procedures-aggregations-insertions-container">
                 {this.state.insertionAgg.map((insertion) => {
@@ -128,7 +128,7 @@ export default class ReturnedProcedures extends Component {
             </div>
           </span>
         )}
-        {!this.props.hideUI && this.state.queriedProcedures.length > 0 && (
+        {!this.props.hideUI && this.state.completedCalls.length > 0 && (
           <span className="vas-returned-procedures-outer">
             <div className="vas-table-thead-row vas-home-completed-thead">
               <select
@@ -166,7 +166,7 @@ export default class ReturnedProcedures extends Component {
               )}
             </div>
             <div className="vas-home-table-body">
-              {this.state.queriedProcedures.length < 1 && (
+              {this.state.completedCalls.length < 1 && (
                 <div>
                   <p className="vas-queue-no-items">
                     There are no completed items yet for today
@@ -177,7 +177,7 @@ export default class ReturnedProcedures extends Component {
                 this.props.orderChangeById &&
                 this.props.proceduresById &&
                 this.props.itemsById &&
-                this.state.queriedProcedures.map((call) => {
+                this.state.completedCalls.map((call) => {
                   let responseTimeHr =
                     Math.floor(call.responseTime / 3600000) % 24;
                   let responseTimeMin =

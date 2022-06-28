@@ -50,7 +50,7 @@ export default async (req, res) => {
         );
         break;
       case "/get-open-call-for-user":
-        Call.find({ userId: req.body.userId }, (err, call) => {
+        Call.findOne({ userId: req.body.userId }, (err, call) => {
           if (err) return res.status(200).json(err);
           if (call) {
             return res.status(200).json(call);
@@ -133,8 +133,8 @@ export default async (req, res) => {
         break;
       case "/procedure-completed":
         Call.findOneAndUpdate(
-          { _id: req.body.newCallObj._id },
-          { $set: req.body.newCallObj },
+          { _id: req.body._id },
+          { $set: req.body },
           { new: true },
           (err, call) => {
             if (err) return res.status(200).json(err);
@@ -562,10 +562,14 @@ export default async (req, res) => {
         );
         break;
       case "/save-call":
-        Call.replaceOne({ _id: req.body._id }, req.body, (err) => {
-          if (err) return res.status(200).json(err);
-          return res.status(200).json(true);
-        });
+        Call.replaceOne(
+          { _id: req.body.activeCall._id },
+          req.body.activeCall,
+          (err) => {
+            if (err) return res.status(200).json(err);
+            return res.status(200).json(true);
+          }
+        );
         break;
       case "/get-insertion-types-aggregation":
         Call.aggregate([

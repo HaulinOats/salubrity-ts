@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import axios from "axios";
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
-import { HomeState } from "../types/HomeState.type";
 import { getItemFromStorage, setStorageItem } from "../util/storage";
 import Login from "../components/Login";
 import UpdateTimer from "../components/UpdateTimer";
@@ -12,10 +11,48 @@ import Modal from "../components/Modal";
 import ReturnedProcedures from "../components/ReturnedProcedures";
 import { User } from "../types/User.type";
 import helpers from "../util/helpers";
+import Call from "../types/Call.type";
+import { Hospital } from "../types/Hospital.type";
+import Procedure from "../types/Procedure.type";
+import Option from "../types/Option.type";
+import CallNeed from "../types/CallNeed.type";
+
+interface HomeState {
+  activeHomeTab: string;
+  activeCall: undefined | Call;
+  allOptions: Option[];
+  allUsers: User[];
+  callNeeds: undefined | CallNeed[];
+  completedCalls: Call[];
+  confirmationType: undefined | string;
+  errorArr: string[];
+  hospitals: Hospital[] | undefined;
+  hospitalsById: undefined | { [key: string | number]: any };
+  itemsById: undefined | { [key: string]: any };
+  lastUpdateHide: boolean;
+  lineProcedures: [];
+  linesSortBy: string;
+  modalIsOpen: boolean;
+  modalTitle: undefined | string;
+  modalMessage: undefined | string;
+  modalConfirmation: boolean;
+  onlineUsersVisible: boolean;
+  onlineUsers: [];
+  orderChangeById: [];
+  orderChanges: undefined;
+  procedures: Procedure[];
+  proceduresById: undefined | { [key: string | number]: Procedure };
+  queueItems: Call[];
+  selectedProcedures: [];
+  statusById: undefined;
+  user: undefined | User;
+  userMenuVisible: boolean;
+  usersById: undefined | { [key: number]: User };
+}
 
 const HomeStateDefault: HomeState = {
   activeHomeTab: "queue",
-  activeRecord: undefined,
+  activeCall: undefined,
   allOptions: [],
   allUsers: [],
   callNeeds: undefined,
@@ -30,8 +67,8 @@ const HomeStateDefault: HomeState = {
   linesSortBy: "dressingChangeDate",
   modalConfirmation: false,
   modalIsOpen: false,
-  modalMessage: "",
-  modalTitle: "",
+  modalMessage: undefined,
+  modalTitle: undefined,
   onlineUsers: [],
   onlineUsersVisible: false,
   orderChanges: undefined,
@@ -90,7 +127,15 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     setStorageItem("user", homeState.user);
-    if (homeState.user) refreshUserSession();
+    if (homeState.user) {
+      setHomeState({
+        ...homeState,
+        activeCall: homeState.queueItems.find(
+          (call: Call) => call.openBy === homeState.user?.userId
+        ),
+      });
+      refreshUserSession();
+    }
   }, [homeState.user]);
 
   const resetHomeState = () => {
@@ -173,7 +218,7 @@ const Home: NextPage = () => {
         .then((resp) => {
           setHomeState({
             ...homeState,
-            activeRecord: resp,
+            activeCall: resp,
             activeHomeTab: "open",
           });
         })
@@ -195,37 +240,31 @@ const Home: NextPage = () => {
     }
   };
 
-  const closeRecordCallback = (type: string) => {
-    switch (type) {
-      case "delete":
-        let queueItems = homeState.queueItems;
-        for (var i = queueItems.length - 1; i >= 0; i--) {
-          if (queueItems[i]._id === homeState.activeRecord._id) {
-            queueItems.splice(i, 1);
-          }
-        }
-        setHomeState({ ...homeState, queueItems });
-        break;
-      default:
-        axios
-          .post("/api/main", {
-            _id: homeState.activeRecord._id,
-            path: "/set-as-done-editing",
-          })
-          .then((resp) => {
-            console.log(resp.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        break;
+  const closeRecordCallback = (shouldDelete?: boolean) => {
+    let queueItems = homeState.queueItems;
+    if (shouldDelete) {
+      queueItems = queueItems.filter(
+        (item) => item._id !== homeState.activeCall?._id
+      );
     }
 
-    setHomeState({
-      ...homeState,
-      activeRecord: undefined,
-      activeHomeTab: "queue",
-    });
+    axios
+      .post("/api/main", {
+        _id: homeState.activeCall?._id,
+        path: "/set-as-done-editing",
+      })
+      .then((resp) => {
+        console.log(resp.data);
+        setHomeState({
+          ...homeState,
+          activeCall: undefined,
+          activeHomeTab: "queue",
+          queueItems,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const checkUserSession = () => {
@@ -301,10 +340,6 @@ const Home: NextPage = () => {
       //get active calls
       let activeCalls = await getActiveCalls(false);
       newState.queueItems = activeCalls;
-
-      //get open call for user
-      let openCall = await helpers.getOpenCallForUser(homeState.user?.userId);
-      newState.activeRecord = openCall;
     } catch (err) {
       addToErrorArray(err);
     }
@@ -438,7 +473,7 @@ const Home: NextPage = () => {
         queueItems,
         modalTitle: "Call Was Added",
         modalMessage: "Your call was added to the queue!",
-        activeRecord: callData.openBy ? callData : homeState.activeRecord,
+        activeCall: callData.openBy ? callData : homeState.activeCall,
         activeHomeTab: callData.openBy ? "open" : homeState.activeHomeTab,
       });
       setTimeout(() => {
@@ -462,7 +497,7 @@ const Home: NextPage = () => {
 
   const selectJob = (job: any) => {
     console.log(job);
-    if (!homeState.activeRecord) {
+    if (!homeState.activeCall) {
       if (job.openBy) {
         if (job.openBy !== homeState.user?.userId) {
           setHomeState({
@@ -483,7 +518,7 @@ const Home: NextPage = () => {
               } else {
                 setHomeState({
                   ...homeState,
-                  activeRecord: resp.data,
+                  activeCall: job,
                   activeHomeTab: "open",
                 });
               }
@@ -504,7 +539,7 @@ const Home: NextPage = () => {
             } else {
               setHomeState({
                 ...homeState,
-                activeRecord: resp.data,
+                activeCall: resp.data,
                 activeHomeTab: "open",
               });
             }
@@ -517,13 +552,13 @@ const Home: NextPage = () => {
       let tempState: any = {
         activeHomeTab: "open",
       };
-      if (job._id !== homeState.activeRecord._id) {
+      if (job._id !== homeState.activeCall._id) {
         tempState = {
           ...tempState,
           modalIsOpen: true,
           modalTitle: "You Have An Open Record",
           modalMessage:
-            'You already have a record open. Complete it or "Return To Queue" to select a different one.',
+            'You already have a record open. Complete it or "Return To Lines Tab" to select a different one.',
         };
       }
       setHomeState({ ...homeState, ...tempState });
@@ -556,21 +591,22 @@ const Home: NextPage = () => {
     });
   };
 
-  const saveCurrentRecord = (record: any) => {
-    let currentRecord = { ...record };
-    currentRecord.updatedBy = homeState.user?.userId;
-    currentRecord.updatedAt = new Date().toISOString();
+  const saveActiveCall = (record: Call | undefined) => {
+    if (!record) return setHomeState({ ...homeState, activeCall: record });
+    let activeCall = { ...record };
+    activeCall.updatedBy = homeState.user?.userId!;
+    activeCall.updatedAt = new Date().toISOString();
     axios
       .post("/api/main", {
-        currentRecord,
+        activeCall,
         path: "/save-call",
       })
       .then((resp) => {
         if (resp.data.error || resp.data._message) {
           console.log(resp.data);
-          setHomeState({ ...homeState, activeRecord: currentRecord });
         } else {
           console.log("active call saved");
+          setHomeState({ ...homeState, activeCall });
         }
       })
       .catch((err) => {
@@ -716,11 +752,10 @@ const Home: NextPage = () => {
                 <p className='vas-home-nav-item-text'>Lines</p>
                 <div className='vas-home-nav-item-refresh-bar'></div>
               </li> */}
-            {homeState.activeRecord && (
+            {homeState.activeCall && (
               <li
                 className={
-                  "vas-home-nav-item vas-status-" +
-                  homeState.activeRecord.status
+                  "vas-home-nav-item vas-status-" + homeState.activeCall.status
                 }
                 data-isactive={
                   homeState.activeHomeTab === "open" ? true : false
@@ -757,7 +792,7 @@ const Home: NextPage = () => {
               }
             >
               <ReturnedProcedures
-                queriedProcedures={homeState.completedCalls}
+                completedCalls={homeState.completedCalls}
                 hospitalsById={homeState.hospitalsById}
                 usersById={homeState.usersById}
                 itemsById={homeState.itemsById}
@@ -786,28 +821,27 @@ const Home: NextPage = () => {
               className="vas-home-page-container"
               data-isactive={homeState.activeHomeTab === "open" ? true : false}
             >
-              {homeState.activeRecord &&
+              {homeState.activeCall &&
                 homeState.hospitals &&
                 homeState.callNeeds &&
                 homeState.orderChanges &&
                 homeState.procedures &&
                 homeState.itemsById &&
+                homeState.statusById &&
                 homeState.allOptions.length > 0 && (
                   <EditProcedure
                     callNeeds={homeState.callNeeds}
                     hospitals={homeState.hospitals}
-                    hospitalsById={homeState.hospitalsById}
                     statusById={homeState.statusById}
                     orderChanges={homeState.orderChanges}
-                    activeRecord={homeState.activeRecord}
-                    allOptions={homeState.allOptions}
+                    activeCall={homeState.activeCall}
                     procedures={homeState.procedures}
                     usersById={homeState.usersById}
                     itemsById={homeState.itemsById}
                     closeRecordCallback={closeRecordCallback}
                     user={homeState.user}
                     refreshUserSession={refreshUserSession}
-                    saveCurrentRecord={saveCurrentRecord}
+                    saveActiveCall={saveActiveCall}
                   />
                 )}
             </div>

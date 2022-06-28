@@ -62,7 +62,6 @@ export default class EditProcedure extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      currentRecord: nextProps.activeRecord,
       isPostEdit: nextProps.activeRecord.completedAt ? true : false,
       isDressingChange: nextProps.activeRecord.dressingChangeDate
         ? true
@@ -71,7 +70,8 @@ export default class EditProcedure extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
+    console.log("EditProcedure mounted");
+    console.log({ props: this.props, state: this.state });
   }
 
   dressingChangeDateOnChange(date) {
@@ -526,17 +526,15 @@ export default class EditProcedure extends Component {
       let callTime = new Date(this.props.activeRecord.createdAt);
       let startTime = new Date(this.props.activeRecord.startTime);
       let callObj = {
-        newCallObj: {
-          _id: this.props.activeRecord._id,
-          proceduresDone: proceduresObj.procedureArr,
-          procedureIds: proceduresObj.procedureIds,
-          itemIds: proceduresObj.itemIds,
-          completedBy: Number(this.props.user.userId),
-          completedAt: completionTime.toISOString(),
-          procedureTime: completionTime - startTime,
-          responseTime: startTime - callTime,
-          openBy: null,
-        },
+        _id: this.props.activeRecord._id,
+        proceduresDone: proceduresObj.procedureArr,
+        procedureIds: proceduresObj.procedureIds,
+        itemIds: proceduresObj.itemIds,
+        completedBy: Number(this.props.user.userId),
+        completedAt: completionTime.toISOString(),
+        procedureTime: completionTime - startTime,
+        responseTime: startTime - callTime,
+        openBy: null,
       };
 
       axios

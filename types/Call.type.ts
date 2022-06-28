@@ -1,0 +1,34 @@
+export default interface Call {
+  [key: string | number]: any;
+  addComments: undefined | string;
+  completedAt: undefined | Date;
+  completedBy: undefined | number;
+  contact: undefined | string;
+  createdAt: undefined | Date;
+  createdBy: undefined | number;
+  customJob: undefined | string;
+  dob: undefined | Date;
+  dressingChangeDate: undefined | Date;
+  hospital: undefined | number;
+  insertedBy: undefined | string;
+  insertionLength: number;
+  itemIds: number[];
+  job: undefined | string;
+  mrn: undefined | number;
+  openBy: undefined | number;
+  orderChange: undefined | number;
+  patientName: undefined | string;
+  preComments: undefined | string;
+  procedureIds: number[];
+  proceduresDone: { procedureId: number; itemIds: number[] }[];
+  procedureTime: undefined | number;
+  provider: string;
+  responseTime: undefined | number;
+  room: undefined | string;
+  startTime: Date;
+  status: number;
+  updatedAt: undefined | string;
+  updatedBy: undefined | number;
+  wasConsultation: boolean;
+  _id: string;
+}
