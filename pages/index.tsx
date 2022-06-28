@@ -598,7 +598,7 @@ const Home: NextPage = () => {
     activeCall.updatedAt = new Date().toISOString();
     axios
       .post("/api/main", {
-        activeCall,
+        call: activeCall,
         path: "/save-call",
       })
       .then((resp) => {

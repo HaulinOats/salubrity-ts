@@ -562,14 +562,10 @@ export default async (req, res) => {
         );
         break;
       case "/save-call":
-        Call.replaceOne(
-          { _id: req.body.activeCall._id },
-          req.body.activeCall,
-          (err) => {
-            if (err) return res.status(200).json(err);
-            return res.status(200).json(true);
-          }
-        );
+        Call.replaceOne({ _id: req.body.call._id }, req.body.call, (err) => {
+          if (err) return res.status(200).json(err);
+          return res.status(200).json(true);
+        });
         break;
       case "/get-insertion-types-aggregation":
         Call.aggregate([
