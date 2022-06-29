@@ -8,6 +8,7 @@ import Queue from "../components/Queue";
 import EditProcedure from "../components/EditProcedure";
 import LineProcedures from "../components/LineProcedures";
 import Modal from "../components/Modal";
+import { Modal as ModalType } from "../types/Modal.type";
 import ReturnedProcedures from "../components/ReturnedProcedures";
 import { User } from "../types/User.type";
 import helpers from "../util/helpers";
@@ -32,10 +33,6 @@ interface HomeState {
   lastUpdateHide: boolean;
   lineProcedures: [];
   linesSortBy: string;
-  modalIsOpen: boolean;
-  modalTitle: undefined | string;
-  modalMessage: undefined | string;
-  modalConfirmation: boolean;
   onlineUsersVisible: boolean;
   onlineUsers: [];
   orderChangeById: [];
@@ -65,10 +62,6 @@ const HomeStateDefault: HomeState = {
   lastUpdateHide: false,
   lineProcedures: [],
   linesSortBy: "dressingChangeDate",
-  modalConfirmation: false,
-  modalIsOpen: false,
-  modalMessage: undefined,
-  modalTitle: undefined,
   onlineUsers: [],
   onlineUsersVisible: false,
   orderChanges: undefined,
@@ -94,6 +87,11 @@ const Home: NextPage = () => {
 
   const [lastLogin, setLastLogin] = useState(Date.now());
   const [homeState, setHomeState] = useState(HomeStateDefault);
+  const [modalState, setModalState] = useState<ModalType>({
+    content: undefined,
+    confirmation: false,
+    autoClose: false,
+  });
 
   //on component mount/unmount
   useEffect(() => {
@@ -124,6 +122,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     setTab(homeState.activeHomeTab);
   }, [homeState.activeHomeTab]);
+
+  useEffect(() => {
+    if (modalState.autoClose) {
+      setTimeout(() => resetModal(), 3000);
+    }
+  }, [modalState]);
 
   useEffect(() => {
     setStorageItem("user", homeState.user);
@@ -223,19 +227,21 @@ const Home: NextPage = () => {
           });
         })
         .catch((err) => {
-          setHomeState({
-            ...homeState,
-            modalTitle: "Record Is Already Open",
-            modalMessage: `This record is currently open by ${err.userId}`,
-            modalIsOpen: true,
+          setModalState({
+            ...modalState,
+            content: {
+              title: "Record Is Already Open",
+              message: `This record is currently open by ${err.userId}`,
+            },
           });
         });
     } else {
-      setHomeState({
-        ...homeState,
-        modalTitle: "Not Allowed To Edit",
-        modalMessage: "You cannot edit someone else's completed record",
-        modalIsOpen: true,
+      setModalState({
+        ...modalState,
+        content: {
+          title: "Not Allowed To Edit",
+          message: "You cannot edit someone else's completed record",
+        },
       });
     }
   };
@@ -275,14 +281,14 @@ const Home: NextPage = () => {
       `${Math.floor(timeDiff / 60)} minutes inactive (ends session at 60)`
     );
     if (timeDiff > 3419) {
-      setHomeState({
-        ...homeState,
-        modalTitle: "Session Is About To End",
-        modalMessage:
-          'You are about to be logged out due to inactivity. Click "OK" to continue session.',
-        modalIsOpen: true,
-        modalConfirmation: true,
-        confirmationType: "end-session",
+      setModalState({
+        ...modalState,
+        content: {
+          title: "Session Is About To End",
+          message:
+            'You are about to be logged out due to inactivity. Click "OK" to continue session.',
+        },
+        confirmation: true,
       });
     }
     if (timeDiff > 3600) {
@@ -421,10 +427,12 @@ const Home: NextPage = () => {
   };
 
   const addCall = () => {
-    setHomeState({
-      ...homeState,
-      modalTitle: "Add Call",
-      modalIsOpen: true,
+    setModalState({
+      ...modalState,
+      content: {
+        title: "Add Call",
+        message: "",
+      },
     });
   };
 
@@ -456,42 +464,36 @@ const Home: NextPage = () => {
     setHomeState({ ...homeState, errorArr: errArr });
   };
 
-  const toggleHandler = () => {
-    setHomeState({
-      ...homeState,
-      modalIsOpen: !homeState.modalIsOpen,
-    });
-  };
-
-  const closeModal = (callDataReturned: any) => {
-    let callData = callDataReturned;
-    if (callData) {
+  const closeModal = (modalObj: { call?: Call; modalData?: ModalType }) => {
+    if (modalObj.call) {
+      let callData = { ...modalObj.call };
       let queueItems = homeState.queueItems;
       queueItems.push(callData);
       setHomeState({
         ...homeState,
         queueItems,
-        modalTitle: "Call Was Added",
-        modalMessage: "Your call was added to the queue!",
         activeCall: callData.openBy ? callData : homeState.activeCall,
         activeHomeTab: callData.openBy ? "open" : homeState.activeHomeTab,
       });
-      setTimeout(() => {
-        resetModal();
-      }, 2000);
+      setModalState({
+        ...modalState,
+        ...modalObj.modalData,
+      });
     } else {
       resetModal();
     }
   };
 
+  const updateModal = (modalData: ModalType) => {
+    setModalState({ ...setModalState, ...modalData });
+  };
+
   const resetModal = () => {
-    setHomeState({
-      ...homeState,
-      modalIsOpen: false,
-      modalMessage: "",
-      modalTitle: "",
-      modalConfirmation: false,
-      confirmationType: undefined,
+    setModalState({
+      ...modalState,
+      content: undefined,
+      confirmation: false,
+      autoClose: false,
     });
   };
 
@@ -500,11 +502,12 @@ const Home: NextPage = () => {
     if (!homeState.activeCall) {
       if (job.openBy) {
         if (job.openBy !== homeState.user?.userId) {
-          setHomeState({
-            ...homeState,
-            modalIsOpen: true,
-            modalTitle: "Record Already Open",
-            modalMessage: `This record is currently opened by someone else: ${job.openBy} `,
+          setModalState({
+            ...modalState,
+            content: {
+              title: "Record Already Open",
+              message: `This record is currently opened by someone else: ${job.openBy} `,
+            },
           });
         } else {
           axios
@@ -556,8 +559,8 @@ const Home: NextPage = () => {
         tempState = {
           ...tempState,
           modalIsOpen: true,
-          modalTitle: "You Have An Open Record",
-          modalMessage:
+          title: "You Have An Open Record",
+          message:
             'You already have a record open. Complete it or "Return To Lines Tab" to select a different one.',
         };
       }
@@ -830,6 +833,9 @@ const Home: NextPage = () => {
                 homeState.statusById &&
                 homeState.allOptions.length > 0 && (
                   <EditProcedure
+                    modalState={modalState}
+                    updateModal={updateModal}
+                    closeModal={closeModal}
                     callNeeds={homeState.callNeeds}
                     hospitals={homeState.hospitals}
                     statusById={homeState.statusById}
@@ -846,15 +852,12 @@ const Home: NextPage = () => {
                 )}
             </div>
           </div>
-          {homeState.modalIsOpen && (
+          {modalState.content && (
             <Modal
+              modalState={modalState}
               getConfirmation={getModalConfirmation}
-              isConfirmation={homeState.modalConfirmation}
               user={homeState.user}
               closeModal={closeModal}
-              modalTitle={homeState.modalTitle}
-              modalMessage={homeState.modalMessage}
-              toggleModal={toggleHandler}
             />
           )}
         </div>

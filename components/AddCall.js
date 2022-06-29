@@ -150,7 +150,7 @@ export default class AddCall extends Component {
   }
 
   addCall() {
-    let addQuery = {
+    let call = {
       room: this.state.roomNumber,
       job: this.state.need,
       contact: this.state.contact,
@@ -171,7 +171,10 @@ export default class AddCall extends Component {
     };
 
     axios
-      .post("/add-call", addQuery)
+      .post("/api/main", {
+        call,
+        path: "/add-call",
+      })
       .then((resp) => {
         this.props.callAdded(resp.data);
       })

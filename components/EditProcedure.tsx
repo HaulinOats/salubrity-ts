@@ -1,18 +1,26 @@
-import { createRef, Ref, RefObject, useMemo, useState } from "react";
+import {
+  createRef,
+  MouseEvent,
+  RefObject,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import moment, { Moment } from "moment";
 import DatePicker from "react-datepicker";
 import { DebounceInput } from "react-debounce-input";
 import Call from "../types/Call.type";
-import Option from "../types/Option.type";
 import Procedure from "../types/Procedure.type";
 import { User } from "../types/User.type";
 import Item from "../types/Item.type";
 import CallNeed from "../types/CallNeed.type";
 import OrderChange from "../types/OrderChange.type";
+import { Modal as ModalType } from "../types/Modal.type";
 
 interface EditProcedureProps {
+  modalState: ModalType;
   activeCall: Call;
   callNeeds: undefined | CallNeed[];
   hospitals: { id: string | number; name: string }[];
@@ -25,15 +33,11 @@ interface EditProcedureProps {
   user: User;
   refreshUserSession: () => void;
   saveActiveCall: (record: Call | undefined) => void;
+  closeModal: (modalObj: { call?: Call; modalData?: ModalType }) => void;
+  updateModal: (modalData: ModalType) => void;
 }
 
 interface EditProcedureState {
-  isPostEdit: boolean;
-  isDressingChange: boolean;
-  modalIsOpen: boolean;
-  modalTitle: undefined | string;
-  modalMessage: undefined | string;
-  modalConfirmation: boolean;
   confirmationType: undefined | string;
   dressingChangeDate: Moment;
   willSetDressingChangeDate: boolean;
@@ -57,12 +61,6 @@ const EditProcedure: React.FC<EditProcedureProps> = (
 
   const [editProcedureState, setEditProcedureState] =
     useState<EditProcedureState>({
-      isPostEdit: props.activeCall.completedAt ? true : false,
-      isDressingChange: props.activeCall.dressingChangeDate ? true : false,
-      modalIsOpen: false,
-      modalTitle: "",
-      modalMessage: "",
-      modalConfirmation: false,
       confirmationType: undefined,
       dressingChangeDate: props.activeCall.dressingChangeDate
         ? moment(props.activeCall.dressingChangeDate)
@@ -77,20 +75,9 @@ const EditProcedure: React.FC<EditProcedureProps> = (
       insertionTypeSelected: false,
     });
 
-  // componentWillReceiveProps(nextProps) {
-  //   setEditProcedureState({
-  // ...editProcedureState,
-  //     isPostEdit: nextProps.activeCall.completedAt ? true : false,
-  //     isDressingChange: nextProps.activeCall.dressingChangeDate
-  //       ? true
-  //       : false,
-  //   });
-  // }
-
-  // componentDidMount() {
-  //   console.log("EditProcedure mounted");
-  //   console.log({ props: props, state: editProcedureState });
-  // }
+  useEffect(() => {
+    props.refreshUserSession();
+  }, [editProcedureState]);
 
   const dressingChangeDateOnChange = (date: Date) => {
     setEditProcedureState({
@@ -135,37 +122,18 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     props.saveActiveCall(activeCall);
   };
 
-  const checkSiblings = (e: React.MouseEvent<HTMLLabelElement>) => {
-    console.log("checkSiblings");
-    console.log(e);
-    return;
-    // while (groupContainer.nextSibling) {
-    //   let nextSib = groupContainer.nextSibling.querySelector(
-    //     ".vas-edit-procedure-select-input"
-    //   );
-    //   if (nextSib) {
-    //     //if next id is a
-    //     //55 = PAC:Initiated (Port-A-Cath), 57 = Patient Refused (Insertion Procedure)
-    //     if (nextSib.id === "55" || nextSib.id === "57") {
-    //       nextSib.checked = false;
-    //     } else {
-    //       nextSib.checked = true;
-    //     }
-    //   }
-    //   groupContainer = groupContainer.nextSibling;
-    // }
-  };
-
   const closeModal = (callData?: Call) => {
     if (callData) {
-      setEditProcedureState({
-        ...editProcedureState,
-        modalTitle: "Call Was Added",
-        modalMessage: "Your call was added to the queue!",
+      props.closeModal({
+        modalData: {
+          content: {
+            title: "Call Was Added",
+            message: "Your call was added to the queue!",
+          },
+          confirmation: false,
+          autoClose: true,
+        },
       });
-      //   setTimeout(() => {
-      //     resetModal();
-      //   }, 2000);
     } else {
       resetModal();
     }
@@ -223,16 +191,18 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const deleteCall = () => {
+    props.updateModal({
+      content: {
+        title: "Delete Active Record?",
+        message: "Are you sure you want to delete the currently active record?",
+      },
+      confirmation: true,
+      autoClose: false,
+    });
     setEditProcedureState({
       ...editProcedureState,
-      modalTitle: "Delete Active Record?",
-      modalMessage:
-        "Are you sure you want to delete the currently active record?",
-      modalIsOpen: true,
-      modalConfirmation: true,
       confirmationType: "delete-call",
     });
-    props.refreshUserSession();
   };
 
   const getConfirmation = (isConfirmed: boolean) => {
@@ -318,13 +288,15 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const procedureSaved = (isEdit: boolean) => {
-    setEditProcedureState({
-      ...editProcedureState,
-      modalTitle: isEdit ? "Procedure Updated" : "Task Complete",
-      modalMessage: isEdit
-        ? "Procedure was updated. Returning to queue."
-        : "Procedure was completed. Returning to queue.",
-      modalIsOpen: true,
+    props.updateModal({
+      content: {
+        title: isEdit ? "Procedure Updated" : "Task Complete",
+        message: isEdit
+          ? "Procedure was updated. Returning to queue."
+          : "Procedure was completed. Returning to queue.",
+      },
+      confirmation: false,
+      autoClose: false,
     });
     props.closeRecordCallback();
   };
@@ -356,7 +328,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
       //Erlanger Main
       if (
         !editProcedureState.dressingChangeDateIsSet &&
-        !editProcedureState.isPostEdit
+        !props.activeCall.completedAt
       ) {
         errors += "- You must select a future dressing change date\n";
       }
@@ -418,11 +390,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     }
 
     if (errors.length) {
-      setEditProcedureState({
-        ...editProcedureState,
-        modalIsOpen: true,
-        modalTitle: "Cannot Submit Procedure",
-        modalMessage: errors,
+      props.updateModal({
+        content: {
+          title: "Cannot Submit Procedure",
+          message: errors,
+        },
+        confirmation: true,
+        autoClose: false,
       });
       return false;
     }
@@ -430,24 +404,29 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const resetForm = () => {
+    props.updateModal({
+      content: {
+        title: "Reset Form?",
+        message:
+          "Are you sure you want to reset the current form? Will cause an app/page reload.",
+      },
+      confirmation: true,
+      autoClose: false,
+    });
     setEditProcedureState({
       ...editProcedureState,
-      modalTitle: "Reset Form?",
-      modalMessage:
-        "Are you sure you want to reset the current form? Will cause an app/page reload.",
-      modalIsOpen: true,
-      modalConfirmation: true,
       confirmationType: "reset-page",
     });
   };
 
   const resetModal = () => {
+    props.updateModal({
+      content: undefined,
+      confirmation: false,
+      autoClose: false,
+    });
     setEditProcedureState({
       ...editProcedureState,
-      modalIsOpen: false,
-      modalMessage: "",
-      modalTitle: "",
-      modalConfirmation: false,
       confirmationType: undefined,
     });
   };
@@ -479,9 +458,6 @@ const EditProcedure: React.FC<EditProcedureProps> = (
         case "text":
           el.value = "";
           break;
-        // case 'number':
-        //   el.value = '0';
-        //   break;
         default:
       }
       if (!isInsertionProcedure && procedureId === 8) {
@@ -489,7 +465,6 @@ const EditProcedure: React.FC<EditProcedureProps> = (
       }
     });
     if (isInsertionProcedure) {
-      console.log("fix later");
       //   document
       //     .querySelectorAll(
       //       '.vas-edit-procedure-inner-span[data-procedureid="8"]'
@@ -560,16 +535,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const selectButton = (
-    e: React.MouseEvent<HTMLLabelElement>,
+    e: MouseEvent<HTMLLabelElement>,
     groupName: string,
     itemId: string | number
   ) => {
     //UPDATE
     //handle group on select
     switch (groupName) {
-      case "What":
-        checkSiblings(e);
-        break;
       case "Insertion Type":
         setEditProcedureState({
           ...editProcedureState,
@@ -583,7 +555,6 @@ const EditProcedure: React.FC<EditProcedureProps> = (
         //   .forEach((el) => {
         //     el.style.display = "inline";
         //   });
-        checkSiblings(e);
         break;
       default:
     }
@@ -646,16 +617,19 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const saveDressingChangeDate = (e: React.MouseEvent) => {
+    props.updateModal({
+      content: {
+        title: "Set Future Dressing Change Date?",
+        message:
+          'This will set the next dressing change date and move this item to the "Lines" tab if it is not already there.',
+      },
+      confirmation: true,
+      autoClose: false,
+    });
     setEditProcedureState({
       ...editProcedureState,
-      modalTitle: "Set Future Dressing Change Date?",
-      modalMessage:
-        'This will set the next dressing change date and move this item to the "Lines" tab if it is not already there.',
-      modalIsOpen: true,
-      modalConfirmation: true,
       confirmationType: "set-dressing-change",
     });
-    props.refreshUserSession();
   };
 
   const saveDobDate = () => {
@@ -665,16 +639,19 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const closeLineType = () => {
+    props.updateModal({
+      content: {
+        title: "Close Line Type?",
+        message:
+          "Are you sure you want to close this record? This will prevent having to set additional dressing change dates.",
+      },
+      confirmation: true,
+      autoClose: false,
+    });
     setEditProcedureState({
       ...editProcedureState,
-      modalTitle: "Close Line Type?",
-      modalMessage:
-        "Are you sure you want to close this record? This will prevent having to set additional dressing change dates.",
-      modalIsOpen: true,
-      modalConfirmation: true,
       confirmationType: "close-line-type",
     });
-    props.refreshUserSession();
   };
 
   const toggleShowSection = (sectionRef: RefObject<HTMLDivElement>) => {
@@ -686,10 +663,10 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     <div
       className={
         "vas-edit-procedure-page-record-container " +
-        (editProcedureState.isPostEdit
+        (props.activeCall.completedAt
           ? "vas-edit-procedure-is-post-edit "
           : "") +
-        (editProcedureState.isDressingChange
+        (props.activeCall.dressingChangeDate
           ? "vas-edit-procedure-is-dressing-change "
           : "")
       }
@@ -702,12 +679,12 @@ const EditProcedure: React.FC<EditProcedureProps> = (
               props.activeCall.status
             }
           >
-            {editProcedureState.isPostEdit && (
+            {props.activeCall.completedAt && (
               <h2 className="vas-edit-procedure-edit-title">
                 Post Procedure Edit
               </h2>
             )}
-            {editProcedureState.isDressingChange && (
+            {props.activeCall.dressingChangeDate && (
               <h2 className="vas-edit-procedure-edit-title">Dressing Change</h2>
             )}
             <p className="vas-edit-procedure-record-header-text">
@@ -791,7 +768,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                   </div>
                 )
               : null}
-            {!editProcedureState.isPostEdit && (
+            {!props.activeCall.completedAt && (
               <span>
                 <button
                   className="vas-edit-procedure-record-header-btn"
@@ -809,7 +786,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                 </button>
               </span>
             )}
-            {editProcedureState.isPostEdit && (
+            {props.activeCall.completedAt && (
               <button
                 className="vas-edit-procedure-record-header-btn"
                 onClick={() => props.closeRecordCallback()}
@@ -908,7 +885,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                             className={
                               "vas-edit-procedure-inner-container-row " +
                               (group.hideGroup
-                                ? editProcedureState.isPostEdit
+                                ? props.activeCall.completedAt
                                   ? ""
                                   : "vas-edit-procedure-important-hide "
                                 : "")
@@ -1056,8 +1033,8 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                         </span>
                       )}
                       {(editProcedureState.insertionTypeSelected ||
-                        editProcedureState.isPostEdit ||
-                        editProcedureState.isDressingChange) && (
+                        props.activeCall.completedAt ||
+                        props.activeCall.dressingChangeDate) && (
                         <div>
                           <div className="vas-edit-procedure-inner-container-row">
                             {/* <h3>{props.allOptions[1].name}:</h3>Medical Record Number */}
@@ -1321,7 +1298,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                   className="vas-button vas-edit-procedure-complete-procedure-btn"
                   onClick={completeProcedure}
                 >
-                  {editProcedureState.isPostEdit
+                  {props.activeCall.completedAt
                     ? "Save Record"
                     : "Submit Procedure"}
                 </button>
@@ -1330,14 +1307,12 @@ const EditProcedure: React.FC<EditProcedureProps> = (
           </div>
         </span>
       )}
-      {editProcedureState.modalIsOpen && (
+      {props.modalState.content && (
         <Modal
-          isConfirmation={editProcedureState.modalConfirmation}
+          modalState={props.modalState}
           user={props.user}
           getConfirmation={getConfirmation}
-          closeModal={closeModal}
-          modalTitle={editProcedureState.modalTitle}
-          modalMessage={editProcedureState.modalMessage}
+          closeModal={props.closeModal}
         />
       )}
     </div>

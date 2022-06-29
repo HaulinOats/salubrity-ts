@@ -16,7 +16,7 @@ export default async (req, res) => {
 
     switch (path) {
       case "/add-call":
-        Call.create(req.body, (err, call) => {
+        Call.create(req.body.call, (err, call) => {
           if (err) return res.status(200).json(err);
           if (call) {
             return res.status(200).json(call);
