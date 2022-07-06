@@ -5,7 +5,6 @@ const UpdateTimer: React.FC = () => {
 
   useEffect(() => {
     const updateInterval = setInterval(() => {
-      console.log("update timer trigger");
       setIntervalSeconds((intervalSeconds) => intervalSeconds + 1);
     }, 1000);
     return () => clearInterval(updateInterval);

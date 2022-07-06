@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
-import Call from "../types/Call.type";
+import { Call } from "../types/Call.type";
 import { Modal } from "../types/Modal.type";
 import { User } from "../types/User.type";
 import AddCall from "./AddCall";
@@ -88,10 +88,7 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
               {props.modalState.content?.message}
             </p>
             {modalState.isAddCall && (
-              <AddCall
-                currentUser={props.user}
-                callAdded={() => closeModal()}
-              />
+              <AddCall user={props.user} callAdded={() => closeModal()} />
             )}
           </div>
           {props.modalState.confirmation && (

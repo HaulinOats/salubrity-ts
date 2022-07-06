@@ -21,7 +21,6 @@ import { RefData } from "../pages";
 interface EditProcedureProps {
   modalState: ModalType;
   activeCall: Call;
-  procedures: Procedure[];
   closeRecordCallback: (shouldDelete?: boolean) => void;
   user: User;
   refreshUserSession: () => void;
@@ -46,7 +45,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
 ) => {
   const refData = useContext(RefData);
   const procedureMainRefs = useMemo(
-    () => props.procedures.map(() => createRef<HTMLDivElement>()),
+    () => refData.procedures.map(() => createRef<HTMLDivElement>()),
     []
   );
   const consultationMainRef = createRef<HTMLDivElement>();
@@ -838,7 +837,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
               </div>
             </div>
           </div>
-          {props.procedures.map((procedure, idx) => {
+          {refData.procedures.map((procedure, idx) => {
             return (
               <div
                 className="vas-edit-procedure-inner-container"
@@ -948,10 +947,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                                           );
                                         }}
                                       >
-                                        {refData?.itemsById
-                                          ? //@ts-ignore
-                                            [itemId].value
-                                          : ""}
+                                        {refData.itemsById![itemId].value}
                                       </label>
                                     </span>
                                   )}
@@ -972,12 +968,9 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                                           );
                                         }}
                                         data-procedureid={procedure.procedureId}
-                                        placeholder={
-                                          refData?.itemsById
-                                            ? //@ts-ignore
-                                              [itemId].value
-                                            : ""
-                                        }
+                                        placeholder={String(
+                                          refData.itemsById![itemId].value
+                                        )}
                                         value={
                                           props.activeCall[group.fieldName]
                                         }

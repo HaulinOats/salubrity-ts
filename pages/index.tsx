@@ -47,22 +47,20 @@ const Home: NextPage = () => {
 
   //on component mount/unmount
   useEffect(() => {
-    let newState: any = {};
+    let newHomeState: any = {};
     let user = getItemFromStorage("user");
     let activeHomeTab = getItemFromStorage("activeHomeTab");
 
     if (user) {
-      newState.user = user;
+      newHomeState.user = user;
       startSessionInterval();
     }
 
     if (activeHomeTab) {
-      newState.activeHomeTab = activeHomeTab;
+      newHomeState.activeHomeTab = activeHomeTab;
     }
 
-    setHomeState({ ...homeState, ...newState });
-
-    stateLoadCalls();
+    stateLoadCalls(newHomeState);
 
     return () => {
       clearInterval(sessionInterval.current);
@@ -70,8 +68,12 @@ const Home: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(homeState);
+    console.log({ homeState });
   }, [homeState]);
+
+  useEffect(() => {
+    console.log({ refDataState });
+  }, [refDataState]);
 
   useEffect(() => {
     setTab(homeState.activeHomeTab);
@@ -88,7 +90,7 @@ const Home: NextPage = () => {
     if (homeState.user) {
       setHomeState({
         ...homeState,
-        activeCall: homeState.queueItems.find(
+        activeCall: homeState?.queueItems?.find(
           (call: Call) => call.openBy === homeState.user?.userId
         ),
       });
@@ -212,8 +214,7 @@ const Home: NextPage = () => {
         _id: homeState.activeCall?._id,
         path: "/set-as-done-editing",
       })
-      .then((resp) => {
-        console.log(resp.data);
+      .then(() => {
         setHomeState({
           ...homeState,
           activeCall: undefined,
@@ -265,33 +266,44 @@ const Home: NextPage = () => {
     resetHomeState();
   };
 
-  const stateLoadCalls = async () => {
-    let newRefDataValues = RefDataDefault;
-    let newHomeStateValues = HomeStateDefault;
+  const stateLoadCalls = async (newHomeState: any) => {
+    let newRefDataValues: any = {};
+    let newHomeStateValues = newHomeState;
 
     try {
+      console.log("trying state load calls");
       //get users
-      let allUsers = await helpers.getAllUsers();
-      newRefDataValues.users = allUsers.usersArr;
-      newRefDataValues.usersById = allUsers.usersById;
+      let { users, usersById } = await helpers.getAllUsers();
+      newRefDataValues.users = users;
+      newRefDataValues.usersById = usersById;
 
       //get options data
-      let options = await helpers.getOptionsData();
-      newRefDataValues.options = options.options;
-      newRefDataValues.hospitals = options.hospitals;
-      newRefDataValues.hospitalsById = options.hospitalsById;
-      newRefDataValues.callNeeds = options.callNeeds;
-      newRefDataValues.orderChanges = options.orderChanges;
-      newRefDataValues.orderChangeById = options.orderChangeById;
-      newRefDataValues.statusById = options.statuses;
+      const {
+        options,
+        hospitals,
+        hospitalsById,
+        orderChanges,
+        orderChangeById,
+        statusById,
+        statuses,
+        callNeeds,
+      } = await helpers.getOptionsData();
+      newRefDataValues.options = options;
+      newRefDataValues.hospitals = hospitals;
+      newRefDataValues.hospitalsById = hospitalsById;
+      newRefDataValues.callNeeds = callNeeds;
+      newRefDataValues.orderChanges = orderChanges;
+      newRefDataValues.orderChangeById = orderChangeById;
+      newRefDataValues.statuses = statuses;
+      newRefDataValues.statusById = statusById;
 
       //get completed calls
       newHomeStateValues.completedCalls = await getCompletedCalls(false);
 
       //get procedure data
-      let procedureData = await helpers.getProcedureData();
-      newRefDataValues.proceduresById = procedureData.proceduresById;
-      newRefDataValues.procedures = procedureData.procedures;
+      const { procedures, proceduresById } = await helpers.getProcedureData();
+      newRefDataValues.procedures = procedures;
+      newRefDataValues.proceduresById = proceduresById;
 
       //get item data
       const { items, itemsById } = await helpers.getItemsData();
@@ -301,11 +313,14 @@ const Home: NextPage = () => {
 
       //get active calls
       newHomeStateValues.queueItems = await getActiveCalls(false);
+
+      console.log("state updating");
+
+      setHomeState({ ...homeState, ...newHomeStateValues });
+      setRefDataState({ ...refDataState, ...newRefDataValues });
     } catch (err) {
       addToErrorArray(err);
     }
-    setHomeState({ ...homeState, ...newHomeStateValues });
-    setRefDataState({ ...refDataState, ...newRefDataValues });
   };
 
   const getCompletedCalls = async (newState?: Object): Promise<any> => {
@@ -415,6 +430,7 @@ const Home: NextPage = () => {
   };
 
   const addToErrorArray = (err: any) => {
+    console.log("adding to error array");
     let errArr = homeState.errorArr;
     errArr.push(err);
     setHomeState({ ...homeState, errorArr: errArr });
@@ -453,22 +469,21 @@ const Home: NextPage = () => {
     });
   };
 
-  const selectJob = (job: any) => {
-    console.log(job);
+  const selectJob = (call: Call) => {
     if (!homeState.activeCall) {
-      if (job.openBy) {
-        if (job.openBy !== homeState.user?.userId) {
+      if (call.openBy) {
+        if (call.openBy !== homeState.user?.userId) {
           setModalState({
             ...modalState,
             content: {
               title: "Record Already Open",
-              message: `This record is currently opened by someone else: ${job.openBy} `,
+              message: `This record is currently opened by someone else: ${call.openBy} `,
             },
           });
         } else {
           axios
             .post("/api/main", {
-              _id: job._id,
+              _id: call._id,
               userId: homeState.user?.userId,
               path: "/set-call-as-open",
             })
@@ -477,7 +492,7 @@ const Home: NextPage = () => {
               } else {
                 setHomeState({
                   ...homeState,
-                  activeCall: job,
+                  activeCall: call,
                   activeHomeTab: "open",
                 });
               }
@@ -489,7 +504,7 @@ const Home: NextPage = () => {
       } else {
         axios
           .post("/api/main", {
-            _id: job._id,
+            _id: call._id,
             userId: homeState.user?.userId,
             path: "/set-call-as-open",
           })
@@ -511,7 +526,7 @@ const Home: NextPage = () => {
       let tempState: any = {
         activeHomeTab: "open",
       };
-      if (job._id !== homeState.activeCall._id) {
+      if (call._id !== homeState.activeCall._id) {
         tempState = {
           ...tempState,
           modalIsOpen: true,
@@ -574,7 +589,15 @@ const Home: NextPage = () => {
   };
 
   if (!homeState.user)
-    return <Login loginType={"user"} loginCallback={loginCallback} />;
+    return (
+      <Login
+        getModalConfirmation={getModalConfirmation}
+        closeModal={closeModal}
+        modalState={modalState}
+        loginType={"user"}
+        loginCallback={loginCallback}
+      />
+    );
 
   if (!refDataState) return <div>Loading...</div>;
 
@@ -756,8 +779,6 @@ const Home: NextPage = () => {
                 <Queue
                   queueItems={homeState.queueItems}
                   selectJob={selectJob}
-                  // hospitalsById={homeState.hospitalsById}
-                  // usersById={homeState.usersById}
                 />
               </div>
               <div
@@ -804,7 +825,6 @@ const Home: NextPage = () => {
                     updateModal={updateModal}
                     closeModal={closeModal}
                     activeCall={homeState.activeCall}
-                    procedures={homeState.procedures}
                     closeRecordCallback={closeRecordCallback}
                     user={homeState.user}
                     refreshUserSession={refreshUserSession}

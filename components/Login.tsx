@@ -1,17 +1,24 @@
 import React, { useState } from "react";
-import DebounceInput from "react-debounce-input";
+import { DebounceInput } from "react-debounce-input";
 import Modal from "./Modal";
 import axios from "axios";
+import { Modal as ModalType } from "../types/Modal.type";
+import { Call } from "../types/Call.type";
+import { User } from "../types/User.type";
 
-const Login = (props) => {
+interface LoginProps {
+  loginCallback: (data: any) => void;
+  loginType: string;
+  modalState: ModalType;
+  closeModal: (modalObj: { call?: Call; modalData?: ModalType }) => void;
+  getModalConfirmation: () => void;
+  user?: User;
+}
+
+const Login: React.FC<LoginProps> = (props) => {
   const [loginState, setLoginState] = useState({
     username: "",
     password: "",
-    modalIsOpen: false,
-    modalMessage: "",
-    modalTitle: "",
-    modalConfirmation: false,
-    confirmationType: null,
   });
 
   const loginUser = async () => {
@@ -49,12 +56,6 @@ const Login = (props) => {
     }
 
     if (errors.length) {
-      setLoginState({
-        ...loginState,
-        modalIsOpen: true,
-        modalTitle: "Login Validation Failed",
-        modalMessage: errors,
-      });
       return false;
     }
     return true;
@@ -69,17 +70,6 @@ const Login = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const closeModal = () => {
-    setLoginState({
-      ...loginState,
-      modalIsOpen: false,
-      modalMessage: "",
-      modalTitle: "",
-      modalConfirmation: false,
-      confirmationType: null,
-    });
   };
 
   return (
@@ -118,7 +108,7 @@ const Login = (props) => {
             onChange={(e) => {
               setLoginState({ ...loginState, password: e.target.value });
             }}
-            onKeyUp={(e) => {
+            onKeyUp={(e: KeyboardEvent) => {
               if (e.key === "Enter") {
                 loginUser();
               }
@@ -148,12 +138,12 @@ const Login = (props) => {
           </p>
         </div>
       </div>
-      {loginState.modalIsOpen && (
+      {props.modalState.content && props.user && (
         <Modal
-          closeModal={closeModal}
-          modalTitle={loginState.modalTitle}
-          modalMessage={loginState.modalMessage}
-          toggleModal={toggleHandler}
+          modalState={props.modalState}
+          getConfirmation={props.getModalConfirmation}
+          user={props.user}
+          closeModal={props.closeModal}
         />
       )}
     </div>

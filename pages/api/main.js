@@ -272,9 +272,7 @@ export default async (req, res) => {
           .exec((err, procedures) => {
             if (err) return res.status(200).json(err);
             if (procedures.length) {
-              return res.status(200).json({
-                procedures,
-              });
+              return res.status(200).json(procedures);
             } else {
               return res
                 .status(200)

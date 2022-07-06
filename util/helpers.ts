@@ -3,7 +3,7 @@ import { Call } from "../types/Call.type";
 import { DropdownOption } from "../types/DropdownOption.type";
 import { Item } from "../types/Item.type";
 import { Option } from "../types/Option.type";
-import { RefData } from "../types/RefData.type";
+import { Procedure } from "../types/Procedure.type";
 
 export const getDateFromObjectId = (objId: string) => {
   if (objId) return new Date(parseInt(objId.substring(0, 8), 16) * 1000);
@@ -28,7 +28,7 @@ export default {
     }
   },
   getAllUsers: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-all-users" })
       .then((resp) => {
         let usersObj: any = {};
@@ -38,7 +38,7 @@ export default {
         }
         return {
           usersById: usersObj,
-          usersArr: resp.data,
+          users: resp.data,
         };
       })
       .catch((err) => {
@@ -47,7 +47,7 @@ export default {
   },
 
   adminGetAllUsers: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/admin-get-all-users" })
       .then((resp) => {
         let usersObj: any = {};
@@ -66,14 +66,10 @@ export default {
   },
 
   getActiveCalls: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-active-calls" })
       .then((resp) => {
-        if (resp.data.error || resp.data._message) {
-          return resp.data;
-        } else {
-          return resp.data;
-        }
+        return resp.data;
       })
       .catch((err) => {
         return err;
@@ -81,18 +77,14 @@ export default {
   },
 
   getOpenLineProcedures: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-open-line-procedures" })
       .then((resp) => {
-        if (resp.data.error || resp.data._message) {
-          return resp.data;
-        } else {
-          let lineProcedures = resp.data;
-          lineProcedures.forEach((_lineProcedure: Call, idx: number) => {
-            lineProcedures[idx].isHidden = false;
-          });
-          return resp.data;
-        }
+        let lineProcedures = resp.data;
+        lineProcedures.forEach((_lineProcedure: Call, idx: number) => {
+          lineProcedures[idx].isHidden = false;
+        });
+        return resp.data;
       })
       .catch((err) => {
         return err;
@@ -111,7 +103,7 @@ export default {
   },
 
   getCompletedCalls: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-completed-calls" })
       .then((resp) => {
         return resp.data;
@@ -122,28 +114,23 @@ export default {
   },
 
   getProcedureData: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-procedures" })
       .then((resp) => {
-        if (resp.data.error || resp.data._message) {
-          return resp.data;
-        } else {
-          let proceduresById: any = {};
-          for (let i = 0; i < resp.data.procedures.length; i++) {
-            proceduresById[resp.data.procedures[i].procedureId] =
-              resp.data.procedures[i];
-          }
-          let procedures = resp.data.procedures;
-          procedures.sort((a: Call, b: Call) => {
-            if (a.seq > b.seq) return 1;
-            if (a.seq < b.seq) return -1;
-            return 0;
-          });
-          return {
-            proceduresById,
-            procedures,
-          };
+        let proceduresById: { [key: number]: Procedure } = {};
+        let procedures: Procedure[] = resp.data;
+        for (let i = 0; i < procedures.length; i++) {
+          proceduresById[procedures[i].procedureId] = procedures[i];
         }
+        procedures.sort((a: Procedure, b: Procedure) => {
+          if (a.seq > b.seq) return 1;
+          if (a.seq < b.seq) return -1;
+          return 0;
+        });
+        return {
+          proceduresById,
+          procedures,
+        };
       })
       .catch((err) => {
         return err;
@@ -151,68 +138,64 @@ export default {
   },
 
   getOptionsData: async (): Promise<any> => {
-    axios
+    return axios
       .post("/api/main", { path: "/get-options" })
       .then((resp) => {
-        if (resp.data.error || resp.data._message) {
-          return resp.data;
-        } else {
-          let options: Option[] = resp.data;
-          let callNeeds: Option;
-          let hospitals: Option;
-          let hospitalsById: { [key: number]: DropdownOption };
-          let orderChangeById: { [key: number]: DropdownOption };
-          let orderChanges: Option;
-          let statusById: { [key: number]: DropdownOption };
-          let statuses: Option;
+        let options: Option[] = resp.data;
+        let callNeeds: Option;
+        let hospitals: Option;
+        let hospitalsById: { [key: number]: DropdownOption } = {};
+        let orderChangeById: { [key: number]: DropdownOption } = {};
+        let orderChanges: Option;
+        let statusById: { [key: number]: DropdownOption } = {};
+        let statuses: Option;
 
-          options.forEach((option: Option, idx: number) => {
-            switch (option.callFieldName) {
-              case "hospital":
-                hospitals = options[idx];
-                break;
-              case "orderChange":
-                orderChanges = options[idx];
-                break;
-              case "status":
-                statuses = options[idx];
-                break;
-              case "callNeeds":
-                callNeeds = options[idx];
-                break;
-              default:
-            }
-          });
+        options.forEach((option: Option, idx: number) => {
+          switch (option.callFieldName) {
+            case "hospital":
+              hospitals = options[idx];
+              break;
+            case "orderChange":
+              orderChanges = options[idx];
+              break;
+            case "status":
+              statuses = options[idx];
+              break;
+            case "callNeeds":
+              callNeeds = options[idx];
+              break;
+            default:
+          }
+        });
 
-          hospitals!.options!.forEach((option) => {
-            hospitalsById[option.id] = option;
-          });
+        hospitals!.options!.forEach((option) => {
+          hospitalsById[option.id] = option;
+        });
 
-          orderChanges!.options!.forEach((order) => {
-            orderChangeById[order.id] = order;
-          });
+        orderChanges!.options!.forEach((order) => {
+          orderChangeById[order.id] = order;
+        });
 
-          statuses!.options!.forEach((status) => {
-            statusById[status.id] = status;
-          });
+        statuses!.options!.forEach((status) => {
+          statusById[status.id] = status;
+        });
 
-          callNeeds!.options!.sort((a: any, b: any) => {
-            if (a.seq > b.seq) return 1;
-            if (a.seq < b.seq) return -1;
-            return 0;
-          });
+        callNeeds!.options!.sort((a: any, b: any) => {
+          if (a.seq > b.seq) return 1;
+          if (a.seq < b.seq) return -1;
+          return 0;
+        });
 
-          return {
-            options,
-            hospitals: hospitals!,
-            hospitalsById: hospitalsById!,
-            orderChanges: orderChanges!,
-            orderChangeById: orderChangeById!,
-            statusById: statusById!,
-            statuses: statuses!,
-            callNeeds: callNeeds!,
-          };
-        }
+        return {
+          options,
+          hospitals: hospitals!,
+          hospitalsById,
+          orderChanges: orderChanges!,
+          orderChangeById,
+          statusById,
+          statuses: statuses!,
+          callNeeds: callNeeds!,
+        };
       })
       .catch((err) => {
         return err;
@@ -223,18 +206,15 @@ export default {
     return axios
       .post("/api/main", { path: "/get-items" })
       .then((resp) => {
-        if (resp.data.error || resp.data._message) {
-          return resp.data;
-        } else {
-          let itemsById: { [key: number]: Item };
-          resp.data.forEach((item: Item) => {
-            itemsById[item.itemId] = item;
-          });
-          return {
-            items: resp.data,
-            itemsById: itemsById!,
-          };
-        }
+        let items = resp.data;
+        let itemsById: { [key: number]: Item } = {};
+        items.forEach((item: Item) => {
+          itemsById[item.itemId] = item;
+        });
+        return {
+          items,
+          itemsById,
+        };
       })
       .catch((err) => {
         return err;
@@ -242,7 +222,7 @@ export default {
   },
 
   getCallById: (callId: string, userId: number): any => {
-    axios
+    return axios
       .post("/api/main", { _id: callId, userId, path: "/get-call-by-id" })
       .then((resp) => {
         return resp.data;
@@ -253,7 +233,7 @@ export default {
   },
 
   getOpenCallForUser: (userId: number): any => {
-    axios
+    return axios
       .post("/api/main", { userId, path: "/get-open-call-for-user" })
       .then((resp) => {
         return resp.data;
