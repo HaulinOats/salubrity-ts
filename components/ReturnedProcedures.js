@@ -476,7 +476,7 @@ export default class ReturnedProcedures extends Component {
                             )}
                             {call.addComments && (
                               <p className="vas-call-comment">
-                                <b>Add'l:</b> {call.addComments}
+                                <b>Add&pos;l:</b> {call.addComments}
                               </p>
                             )}
                           </div>

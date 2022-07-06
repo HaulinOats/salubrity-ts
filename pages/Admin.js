@@ -897,7 +897,7 @@ export default class Admin extends Component {
               >
                 <div className="vas-admin-add-user-container">
                   <h3 className="vas-admin-h3">Add User</h3>
-                  <label>User's Full Name:</label>
+                  <label>User&pos;s Full Name:</label>
                   <input
                     type="text"
                     placeholder="example: Brett Connolly"
@@ -1264,7 +1264,7 @@ export default class Admin extends Component {
                 </div>
                 <hr></hr>
                 <div className="vas-admin-options-order-change-container">
-                  <h4>Manage Add Call 'Need' Options</h4>
+                  <h4>Manage Add Call &pos;Need&pos; Options</h4>
                   <div className="vas-admin-order-change-input-container vas-block-container">
                     <input
                       className="vas-block-input"
