@@ -2,6 +2,7 @@ import {
   createRef,
   MouseEvent,
   RefObject,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -11,24 +12,16 @@ import axios from "axios";
 import moment, { Moment } from "moment";
 import DatePicker from "react-datepicker";
 import { DebounceInput } from "react-debounce-input";
-import Call from "../types/Call.type";
-import Procedure from "../types/Procedure.type";
+import { Call } from "../types/Call.type";
+import { Procedure } from "../types/Procedure.type";
 import { User } from "../types/User.type";
-import Item from "../types/Item.type";
-import CallNeed from "../types/CallNeed.type";
-import OrderChange from "../types/OrderChange.type";
 import { Modal as ModalType } from "../types/Modal.type";
+import { RefData } from "../pages";
 
 interface EditProcedureProps {
   modalState: ModalType;
   activeCall: Call;
-  callNeeds: undefined | CallNeed[];
-  hospitals: { id: string | number; name: string }[];
-  statusById: { options: { id: string | number; name: string }[] };
-  orderChanges: OrderChange;
   procedures: Procedure[];
-  usersById: { [key: number]: User };
-  itemsById: { [key: number]: Item };
   closeRecordCallback: (shouldDelete?: boolean) => void;
   user: User;
   refreshUserSession: () => void;
@@ -51,6 +44,7 @@ interface EditProcedureState {
 const EditProcedure: React.FC<EditProcedureProps> = (
   props: EditProcedureProps
 ) => {
+  const refData = useContext(RefData);
   const procedureMainRefs = useMemo(
     () => props.procedures.map(() => createRef<HTMLDivElement>()),
     []
@@ -465,15 +459,15 @@ const EditProcedure: React.FC<EditProcedureProps> = (
       }
     });
     if (isInsertionProcedure) {
-      //   document
-      //     .querySelectorAll(
-      //       '.vas-edit-procedure-inner-span[data-procedureid="8"]'
-      //     )
-      //     .forEach((el, idx) => {
-      //       if (idx > 1) {
-      //         el.style.display = "none";
-      //       }
-      //     });
+      document
+        .querySelectorAll(
+          '.vas-edit-procedure-inner-span[data-procedureid="8"]'
+        )
+        .forEach((el, idx) => {
+          if (idx > 1) {
+            (el as HTMLSpanElement).style.display = "none";
+          }
+        });
     }
   };
 
@@ -534,6 +528,28 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     }
   };
 
+  const checkSiblings = (e: MouseEvent) => {
+    let groupContainer = (e.target as HTMLLabelElement).closest(
+      ".vas-edit-procedure-inner-span"
+    );
+
+    while (groupContainer?.nextElementSibling) {
+      let nextSib = groupContainer.nextElementSibling.querySelector(
+        ".vas-edit-procedure-select-input"
+      ) as HTMLInputElement;
+      if (nextSib) {
+        //if next id is a
+        //55 = PAC:Initiated (Port-A-Cath), 57 = Patient Refused (Insertion Procedure)
+        if (nextSib.id === "55" || nextSib.id === "57") {
+          nextSib.checked = false;
+        } else {
+          nextSib.checked = true;
+        }
+      }
+      groupContainer = groupContainer.nextElementSibling;
+    }
+  };
+
   const selectButton = (
     e: MouseEvent<HTMLLabelElement>,
     groupName: string,
@@ -548,13 +564,15 @@ const EditProcedure: React.FC<EditProcedureProps> = (
           insertionTypeSelected: true,
         });
 
-        // document
-        //   .querySelectorAll(
-        //     '.vas-edit-procedure-inner-span[data-procedure="8"]'
-        //   )
-        //   .forEach((el) => {
-        //     el.style.display = "inline";
-        //   });
+        document
+          .querySelectorAll(
+            '.vas-edit-procedure-inner-span[data-procedure="8"]'
+          )
+          .forEach((el) => {
+            (el as HTMLSpanElement).style.display = "inline";
+          });
+
+        checkSiblings(e);
         break;
       default:
     }
@@ -578,13 +596,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     props.refreshUserSession();
   };
 
-  const toggleSectionDisplay = (e: React.MouseEvent) => {
-    // let section = e.target.nextSibling;
-    // let sectionButtons = section.querySelectorAll("input");
-    // section.classList.toggle("vas-edit-procedure-important-hide");
-    // sectionButtons.forEach((btn) => {
-    //   btn.checked = false;
-    // });
+  const toggleSectionDisplay = (e: React.MouseEvent<HTMLSpanElement>) => {
+    let section = (e.target as HTMLSpanElement).nextElementSibling;
+    let sectionButtons = section?.querySelectorAll("input");
+    section?.classList.toggle("vas-edit-procedure-important-hide");
+    sectionButtons?.forEach((btn) => {
+      btn.checked = false;
+    });
   };
 
   const toggleConsultation = () => {
@@ -693,14 +711,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                 defaultValue={props.activeCall.job}
                 onChange={handleNeedSelect}
               >
-                {props.callNeeds &&
-                  props.callNeeds.map((option) => {
-                    return (
-                      <option key={option.id} value={option.name}>
-                        {option.name}
-                      </option>
-                    );
-                  })}
+                {refData?.callNeeds?.options?.map((option) => {
+                  return (
+                    <option key={option.id} value={option.name}>
+                      {option.name}
+                    </option>
+                  );
+                })}
               </select>
               {props.activeCall.customJob && (
                 <DebounceInput
@@ -735,7 +752,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                 value={props.activeCall.status}
                 onChange={changeStatus}
               >
-                {props.statusById.options.map((option) => {
+                {refData?.statuses?.options?.map((option) => {
                   return (
                     <option key={option.id} value={option.id}>
                       {option.name}
@@ -744,30 +761,26 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                 })}
               </select>
             </div>
-            {props.usersById
-              ? [props.activeCall.completedBy] && (
-                  <div className="vas-edit-procedure-completed-by-container">
-                    <p>
-                      <b>Completed By: </b>
-                      {props.activeCall.completedBy
-                        ? props.usersById[props.activeCall.completedBy].fullname
-                        : "N/A"}
-                    </p>
-                  </div>
-                )
-              : null}
-            {props.usersById
-              ? [props.activeCall.updatedBy] && (
-                  <div className="vas-edit-procedure-completed-by-container">
-                    <p>
-                      <b>Updated By: </b>
-                      {props.activeCall.updatedBy
-                        ? props.usersById[props.activeCall.updatedBy].fullname
-                        : "N/A"}
-                    </p>
-                  </div>
-                )
-              : null}
+            {refData?.usersById && props.activeCall.completedBy && (
+              <div className="vas-edit-procedure-completed-by-container">
+                <p>
+                  <b>Completed By: </b>
+                  {props.activeCall.completedBy
+                    ? refData.usersById[props.activeCall.completedBy].fullname
+                    : "N/A"}
+                </p>
+              </div>
+            )}
+            {refData?.usersById && props.activeCall.updatedBy && (
+              <div className="vas-edit-procedure-completed-by-container">
+                <p>
+                  <b>Updated By: </b>
+                  {props.activeCall.updatedBy
+                    ? refData.usersById[props.activeCall.updatedBy].fullname
+                    : "N/A"}
+                </p>
+              </div>
+            )}
             {!props.activeCall.completedAt && (
               <span>
                 <button
@@ -935,7 +948,10 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                                           );
                                         }}
                                       >
-                                        {props.itemsById[itemId].value}
+                                        {refData?.itemsById
+                                          ? //@ts-ignore
+                                            [itemId].value
+                                          : ""}
                                       </label>
                                     </span>
                                   )}
@@ -957,7 +973,10 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                                         }}
                                         data-procedureid={procedure.procedureId}
                                         placeholder={
-                                          props.itemsById[itemId].value
+                                          refData?.itemsById
+                                            ? //@ts-ignore
+                                              [itemId].value
+                                            : ""
                                         }
                                         value={
                                           props.activeCall[group.fieldName]
@@ -974,125 +993,125 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                         </span>
                       );
                     })}
-                  </div>
-                  {procedure.procedureId === 4 && (
-                    <span>
-                      <div className="vas-edit-procedure-inner-container-row">
-                        {/* <label className='vas-mt-15 vas-mb-5 vas-block'>{props.allOptions[1].name}:</label>Medical Record Number */}
-                        <label className="vas-mt-15 vas-mb-5 vas-block">
-                          Medical Record Number:
-                        </label>
-                        <DebounceInput
-                          className="vas-custom-input"
-                          debounceTimeout={750}
-                          type="number"
-                          value={
-                            props.activeCall.mrn ? props.activeCall.mrn : ""
-                          }
-                          onChange={(e) => {
-                            inputLiveUpdate(e, "mrn");
-                          }}
-                        />
-                      </div>
-                      <div className="vas-edit-procedure-inner-container-row">
-                        <label className="vas-mt-15 vas-mb-5 vas-block">
-                          Patient Name:
-                        </label>
-                        <DebounceInput
-                          className="vas-custom-input"
-                          debounceTimeout={750}
-                          type="text"
-                          value={
-                            props.activeCall.patientName
-                              ? props.activeCall.patientName
-                              : ""
-                          }
-                          onChange={(e) => {
-                            inputLiveUpdate(e, "patientName");
-                          }}
-                        />
-                      </div>
-                    </span>
-                  )}
-                  {procedure.procedureId === 8 && (
-                    <span>
-                      {props.activeCall.insertedBy && (
-                        <span>
-                          <p className="vas-edit-procedure-insertedBy-label">
-                            Placement Inserted By:
-                          </p>
+                    {procedure.procedureId === 4 && (
+                      <span>
+                        <div className="vas-edit-procedure-inner-container-row">
+                          {/* <label className='vas-mt-15 vas-mb-5 vas-block'>{props.allOptions[1].name}:</label>Medical Record Number */}
+                          <label className="vas-mt-15 vas-mb-5 vas-block">
+                            Medical Record Number:
+                          </label>
                           <DebounceInput
-                            type="text"
-                            className="vas-input vas-custom-input vas-edit-procedure-insertedBy-input"
-                            debounceTimeout={500}
-                            value={props.activeCall.insertedBy}
+                            className="vas-custom-input"
+                            debounceTimeout={750}
+                            type="number"
+                            value={
+                              props.activeCall.mrn ? props.activeCall.mrn : ""
+                            }
                             onChange={(e) => {
-                              inputLiveUpdate(e, "insertedBy");
+                              inputLiveUpdate(e, "mrn");
                             }}
                           />
-                        </span>
-                      )}
-                      {(editProcedureState.insertionTypeSelected ||
-                        props.activeCall.completedAt ||
-                        props.activeCall.dressingChangeDate) && (
-                        <div>
-                          <div className="vas-edit-procedure-inner-container-row">
-                            {/* <h3>{props.allOptions[1].name}:</h3>Medical Record Number */}
-                            <h3>Medical Record Number:</h3>
-                            <DebounceInput
-                              className="vas-custom-input"
-                              debounceTimeout={750}
-                              type="number"
-                              value={
-                                props.activeCall.mrn ? props.activeCall.mrn : ""
-                              }
-                              onChange={(e) => {
-                                inputLiveUpdate(e, "mrn");
-                              }}
-                            />
-                          </div>
-                          <div className="vas-edit-procedure-inner-container-row">
-                            <h3>Patient Name:</h3>
-                            <DebounceInput
-                              className="vas-custom-input"
-                              debounceTimeout={750}
-                              type="text"
-                              value={
-                                props.activeCall.patientName
-                                  ? props.activeCall.patientName
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                inputLiveUpdate(e, "patientName");
-                              }}
-                            />
-                          </div>
-                          <div className="vas-edit-procedure-inner-container-row">
-                            {/* <h3>{props.allOptions[2].name}:</h3>Provider */}
-                            <h3>Provider:</h3>
-                            <DebounceInput
-                              className="vas-custom-input"
-                              debounceTimeout={750}
-                              type="text"
-                              value={
-                                props.activeCall.provider
-                                  ? props.activeCall.provider
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                inputLiveUpdate(e, "provider");
-                              }}
-                            />
-                          </div>
                         </div>
-                      )}
-                    </span>
-                  )}
-                  {/* Add Dressing Change datepicker for Port-a-Cath and Insertion Procedures*/}
-                  {(procedure.procedureId === 4 ||
-                    procedure.procedureId === 8) &&
-                    editProcedureState.willSetDressingChangeDate && (
+                        <div className="vas-edit-procedure-inner-container-row">
+                          <label className="vas-mt-15 vas-mb-5 vas-block">
+                            Patient Name:
+                          </label>
+                          <DebounceInput
+                            className="vas-custom-input"
+                            debounceTimeout={750}
+                            type="text"
+                            value={
+                              props.activeCall.patientName
+                                ? props.activeCall.patientName
+                                : ""
+                            }
+                            onChange={(e) => {
+                              inputLiveUpdate(e, "patientName");
+                            }}
+                          />
+                        </div>
+                      </span>
+                    )}
+                    {procedure.procedureId === 8 && (
                       <span>
+                        {props.activeCall.insertedBy && (
+                          <span>
+                            <p className="vas-edit-procedure-insertedBy-label">
+                              Placement Inserted By:
+                            </p>
+                            <DebounceInput
+                              type="text"
+                              className="vas-input vas-custom-input vas-edit-procedure-insertedBy-input"
+                              debounceTimeout={500}
+                              value={props.activeCall.insertedBy}
+                              onChange={(e) => {
+                                inputLiveUpdate(e, "insertedBy");
+                              }}
+                            />
+                          </span>
+                        )}
+                        {(editProcedureState.insertionTypeSelected ||
+                          props.activeCall.completedAt ||
+                          props.activeCall.dressingChangeDate) && (
+                          <div>
+                            <div className="vas-edit-procedure-inner-container-row">
+                              {/* <h3>{props.allOptions[1].name}:</h3>Medical Record Number */}
+                              <h3>Medical Record Number:</h3>
+                              <DebounceInput
+                                className="vas-custom-input"
+                                debounceTimeout={750}
+                                type="number"
+                                value={
+                                  props.activeCall.mrn
+                                    ? props.activeCall.mrn
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  inputLiveUpdate(e, "mrn");
+                                }}
+                              />
+                            </div>
+                            <div className="vas-edit-procedure-inner-container-row">
+                              <h3>Patient Name:</h3>
+                              <DebounceInput
+                                className="vas-custom-input"
+                                debounceTimeout={750}
+                                type="text"
+                                value={
+                                  props.activeCall.patientName
+                                    ? props.activeCall.patientName
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  inputLiveUpdate(e, "patientName");
+                                }}
+                              />
+                            </div>
+                            <div className="vas-edit-procedure-inner-container-row">
+                              {/* <h3>{props.allOptions[2].name}:</h3>Provider */}
+                              <h3>Provider:</h3>
+                              <DebounceInput
+                                className="vas-custom-input"
+                                debounceTimeout={750}
+                                type="text"
+                                value={
+                                  props.activeCall.provider
+                                    ? props.activeCall.provider
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  inputLiveUpdate(e, "provider");
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </span>
+                    )}
+                    {/* Add Dressing Change datepicker for Port-a-Cath and Insertion Procedures*/}
+                    {(procedure.procedureId === 4 ||
+                      procedure.procedureId === 8) &&
+                      editProcedureState.willSetDressingChangeDate && (
                         <div className="vas-edit-procedure-inner-container-row">
                           <h3>Future Dressing Change Date</h3>
                           <span className="vas-inline-block">
@@ -1111,8 +1130,8 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                             Save
                           </button>
                         </div>
-                      </span>
-                    )}
+                      )}
+                  </div>
                 </div>
               </div>
             );
@@ -1141,14 +1160,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                   onChange={orderSelect}
                 >
                   <option value="">Select An Order Change</option>
-                  {props.orderChanges &&
-                    props.orderChanges.options.map((option, idx) => {
-                      return (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      );
-                    })}
+                  {refData?.orderChanges?.options?.map((option) => {
+                    return (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
@@ -1209,14 +1227,13 @@ const EditProcedure: React.FC<EditProcedureProps> = (
                   onChange={hospitalChange}
                 >
                   <option value="">Select A Hospital</option>
-                  {props.hospitals &&
-                    props.hospitals.map((subOption, idx2) => {
-                      return (
-                        <option key={subOption.id} value={subOption.id}>
-                          {subOption.name}
-                        </option>
-                      );
-                    })}
+                  {refData?.hospitals?.options?.map((subOption) => {
+                    return (
+                      <option key={subOption.id} value={subOption.id}>
+                        {subOption.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {props.activeCall.hospital === 6 && (
                   <div className="vas-edit-procedure-dob-container">

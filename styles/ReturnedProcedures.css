@@ -1,17 +1,17 @@
 .vas-returned-procedures-table {
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 .vas-admin-custom-table-item-outer-container {
-  cursor:pointer;
-  border-bottom:solid 1px black;
+  cursor: pointer;
+  border-bottom: solid 1px black;
 }
 .vas-call-table-item {
-  display:inline-flex;
-  width:100%;
-  font-size:90%;
+  display: inline-flex;
+  width: 100%;
+  font-size: 90%;
 }
 .vas-admin-custom-table {
-  width:100%;
+  width: 100%;
 }
 .vas-home-completed-thead {
   padding: 5px;
@@ -30,13 +30,13 @@
   color: white;
 }
 .vas-admin-custom-table-header-sortby {
-  margin-left:5px;
+  margin-left: 5px;
 }
 .vas-admin-custom-table-item-outer {
-  background:white;
-  font-size:85%;
-  width:100%;
-  user-select:none;
+  background: white;
+  font-size: 85%;
+  width: 100%;
+  user-select: none;
 }
 .vas-home-custom-table-column-1 {
   width: 10%;
@@ -45,35 +45,33 @@
 }
 .vas-home-custom-table-column-2,
 .vas-home-custom-table-column-3 {
-  padding:1% 0 0 1%;
+  padding: 1% 0 0 1%;
 }
 .vas-home-custom-table-column-2 {
-  width:44%;
+  width: 44%;
 }
 .vas-home-custom-table-column-3 {
-  width:47%;
+  width: 47%;
 }
 .vas-admin-custom-table-procedures {
-  width:100%;
+  width: 100%;
 }
 .vas-admin-custom-table-item-column {
-  display:inline-block;
-  padding:.7%;
+  display: inline-block;
+  padding: 0.7%;
 }
 .vas-admin-custom-table-item-column-1 {
-  width:10%;
+  width: 10%;
 }
 .vas-admin-custom-table-item-column-2 {
-  width:25%;
+  width: 25%;
 }
-.vas-admin-custom-table-item-column-2
-.vas-admin-custom-table-td {
+.vas-admin-custom-table-item-column-2 .vas-admin-custom-table-td {
   border-bottom: dotted 1px black;
   padding-bottom: 2px;
 }
-.vas-admin-custom-table-item-column-2
-.vas-admin-custom-table-td:last-child {
-  border:none;
+.vas-admin-custom-table-item-column-2 .vas-admin-custom-table-td:last-child {
+  border: none;
 }
 .vas-home-custom-table-item-column-procedures {
   padding: 1%;
@@ -81,38 +79,32 @@
   margin-left: 11%;
 }
 .vas-admin-custom-table-item-column-3 {
-  display:inline-block;
-  width:40%;
+  display: inline-block;
+  width: 40%;
 }
 .vas-admin-custom-table-item-column-4 {
-  display:inline-block;
-  width:25%;
+  display: inline-block;
+  width: 25%;
 }
-.vas-admin-custom-table-item-column-4
-.vas-admin-left-column {
-  display:inline-block;
-  font-size:90%;
+.vas-admin-custom-table-item-column-4 .vas-admin-left-column {
+  display: inline-block;
+  font-size: 90%;
 }
-.vas-admin-custom-table-item-column-4
-.vas-admin-right-column {
-  float:right;
+.vas-admin-custom-table-item-column-4 .vas-admin-right-column {
+  float: right;
 }
-.vas-admin-custom-table-item-column-4
-.vas-admin-custom-table-td {
-  border-bottom:dotted 1px black;
-  padding:1px 0;
+.vas-admin-custom-table-item-column-4 .vas-admin-custom-table-td {
+  border-bottom: dotted 1px black;
+  padding: 1px 0;
 }
-.vas-admin-custom-table-item-column-4
-.vas-admin-custom-table-td:last-child {
-  border:none;
+.vas-admin-custom-table-item-column-4 .vas-admin-custom-table-td:last-child {
+  border: none;
 }
-.vas-home-custom-table-column-2
-.vas-admin-custom-table-td {
+.vas-home-custom-table-column-2 .vas-admin-custom-table-td {
   border-bottom: dotted 1px black;
   margin-bottom: 2px;
 }
-.vas-home-custom-table-column-2
-.vas-admin-custom-table-td:last-child {
+.vas-home-custom-table-column-2 .vas-admin-custom-table-td:last-child {
   border-bottom: none;
 }
 .vas-call-comments-container {
@@ -120,11 +112,11 @@
   width: 87%;
   padding: 1%;
   font-size: 85%;
-  clear:left;
+  clear: left;
 }
 .vas-call-consultation-container,
 .vas-call-insertedBy-container,
-.vas-call-dressing-change-container{
+.vas-call-dressing-change-container {
   padding: 1%;
   width: 87%;
   margin-left: 11%;
@@ -136,11 +128,11 @@
   font-weight: bold;
   color: green;
 }
-.vas-call-insertedBy{
-  color:teal;
+.vas-call-insertedBy {
+  color: teal;
 }
 .vas-call-dressing-change {
-  color:teal;
+  color: teal;
 }
 .vas-admin-query-procedure-container {
   width: 49%;
@@ -148,33 +140,32 @@
   display: inline-table;
 }
 .vas-admin-query-item-container {
-  font-size:80%;
+  font-size: 80%;
 }
 .vas-admin-query-item {
   margin-bottom: 2px;
   display: flex;
-  border-bottom:dotted 1px black;
+  border-bottom: dotted 1px black;
   margin-bottom: 1px;
   padding-bottom: 1px;
-  margin-top:1px;
+  margin-top: 1px;
 }
 .vas-admin-query-item:last-child {
-  border:none;
+  border: none;
 }
 .vas-admin-query-item-insertedBy {
-
 }
 .vas-returned-procedures-query-item-left {
   /* font-weight:bold; */
 }
 .vas-returned-procedures-query-item-right {
-  margin:0 auto;
-  margin-right:0;
+  margin: 0 auto;
+  margin-right: 0;
 }
 .vas-admin-query-procedure-header {
-  background:lightgrey;
-  padding:2px;
-  display:flex;
+  background: lightgrey;
+  padding: 2px;
+  display: flex;
   align-items: center;
 }
 .vas-admin-query-procedure-names {
@@ -187,23 +178,23 @@
   margin-right: 0;
 }
 .vas-returned-procedures-no-calls-container {
-  height: 35px;
+  min-height: 40px;
   background: cadetblue;
-  padding: 2%;
+  padding: 4% 2%;
 }
 .vas-returned-procedures-no-calls-container p {
-  font-size:110%;
-  margin-top:10px;
-  color:white;
+  font-size: 110%;
+  margin: 0;
+  color: white;
 }
 .vas-returned-procedures-print {
   padding: 5px;
   box-shadow: 1px 1px 2px black;
   border-radius: 3px;
   background: teal;
-  margin-left:10px;
-  cursor:pointer;
-  width:25px;
+  margin-left: 10px;
+  cursor: pointer;
+  width: 25px;
 }
 .vas-returned-procedures-print:active {
   box-shadow: none;
@@ -212,7 +203,7 @@
   padding: 5px 0;
 }
 .vas-returned-procedures-records-returned {
-  margin-bottom:8px;
+  margin-bottom: 8px;
 }
 .vas-returned-procedures-aggregations-insertions-item {
   display: flex;
@@ -221,40 +212,38 @@
   margin: 3px 0px;
 }
 .vas-returned-procedures-aggregations-insertions-item-left {
-
 }
 .vas-returned-procedures-aggregations-insertions-item-right {
-  margin:0 auto;
-  margin-right:0;
+  margin: 0 auto;
+  margin-right: 0;
 }
 .vas-returned-procedures-time-hour-min {
-  font-weight:bold;
-  display:block;
+  font-weight: bold;
+  display: block;
 }
 .vas-returned-procedures-time-month-day {
-  font-size:90%;
+  font-size: 90%;
 }
-.vas-returned-procedures-show-hide-toggle-container{
+.vas-returned-procedures-show-hide-toggle-container {
   height: 10px;
-  padding:3px 0;
+  padding: 3px 0;
   background: #2a7e81;
   text-align: center;
   color: white;
-  font-size:70%;
+  font-size: 70%;
 }
 @media (min-width: 650px) {
   .vas-home-custom-table-column-1 {
-    width:6%;
+    width: 6%;
   }
   .vas-home-custom-table-column-2,
   .vas-home-custom-table-column-3 {
-   
   }
   .vas-call-table-item {
-    width:60%;
+    width: 60%;
   }
   .vas-home-custom-table-item-column-procedures {
-    padding: .5% 0 .5% .5%;
+    padding: 0.5% 0 0.5% 0.5%;
     margin: 0;
     width: 39%;
     display: inline-flex;
@@ -266,6 +255,5 @@
     padding: 3px;
   }
   .vas-call-consultation-container {
-
   }
 }

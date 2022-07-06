@@ -1,6 +1,13 @@
 import type { NextPage } from "next";
 import axios from "axios";
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { getItemFromStorage, setStorageItem } from "../util/storage";
 import Login from "../components/Login";
 import UpdateTimer from "../components/UpdateTimer";
@@ -12,69 +19,11 @@ import { Modal as ModalType } from "../types/Modal.type";
 import ReturnedProcedures from "../components/ReturnedProcedures";
 import { User } from "../types/User.type";
 import helpers from "../util/helpers";
-import Call from "../types/Call.type";
-import { Hospital } from "../types/Hospital.type";
-import Procedure from "../types/Procedure.type";
-import Option from "../types/Option.type";
-import CallNeed from "../types/CallNeed.type";
+import { Call } from "../types/Call.type";
+import { RefData as RefDataType, RefDataDefault } from "../types/RefData.type";
+import { HomeState, HomeStateDefault } from "../types/HomeState.type";
 
-interface HomeState {
-  activeHomeTab: string;
-  activeCall: undefined | Call;
-  allOptions: Option[];
-  allUsers: User[];
-  callNeeds: undefined | CallNeed[];
-  completedCalls: Call[];
-  confirmationType: undefined | string;
-  errorArr: string[];
-  hospitals: Hospital[] | undefined;
-  hospitalsById: undefined | { [key: string | number]: any };
-  itemsById: undefined | { [key: string]: any };
-  lastUpdateHide: boolean;
-  lineProcedures: [];
-  linesSortBy: string;
-  onlineUsersVisible: boolean;
-  onlineUsers: [];
-  orderChangeById: [];
-  orderChanges: undefined;
-  procedures: Procedure[];
-  proceduresById: undefined | { [key: string | number]: Procedure };
-  queueItems: Call[];
-  selectedProcedures: [];
-  statusById: undefined;
-  user: undefined | User;
-  userMenuVisible: boolean;
-  usersById: undefined | { [key: number]: User };
-}
-
-const HomeStateDefault: HomeState = {
-  activeHomeTab: "queue",
-  activeCall: undefined,
-  allOptions: [],
-  allUsers: [],
-  callNeeds: undefined,
-  completedCalls: [],
-  confirmationType: undefined,
-  errorArr: [],
-  hospitals: undefined,
-  hospitalsById: undefined,
-  itemsById: undefined,
-  lastUpdateHide: false,
-  lineProcedures: [],
-  linesSortBy: "dressingChangeDate",
-  onlineUsers: [],
-  onlineUsersVisible: false,
-  orderChanges: undefined,
-  orderChangeById: [],
-  procedures: [],
-  proceduresById: undefined,
-  queueItems: [],
-  selectedProcedures: [],
-  statusById: undefined,
-  user: undefined,
-  userMenuVisible: false,
-  usersById: undefined,
-};
+export const RefData = createContext<RefDataType>(RefDataDefault);
 
 const Home: NextPage = () => {
   const tabRefreshQueue = useRef<HTMLDivElement>(null);
@@ -86,7 +35,10 @@ const Home: NextPage = () => {
   );
 
   const [lastLogin, setLastLogin] = useState(Date.now());
-  const [homeState, setHomeState] = useState(HomeStateDefault);
+  const [refDataState, setRefDataState] = useState<undefined | RefDataType>(
+    undefined
+  );
+  const [homeState, setHomeState] = useState<HomeState>(HomeStateDefault);
   const [modalState, setModalState] = useState<ModalType>({
     content: undefined,
     confirmation: false,
@@ -108,7 +60,9 @@ const Home: NextPage = () => {
       newState.activeHomeTab = activeHomeTab;
     }
 
-    stateLoadCalls(newState);
+    setHomeState({ ...homeState, ...newState });
+
+    stateLoadCalls();
 
     return () => {
       clearInterval(sessionInterval.current);
@@ -184,7 +138,6 @@ const Home: NextPage = () => {
   const showOnlineUsers = async () => {
     try {
       let response = await helpers.getOnlineUsers();
-      response = await response.json();
       setHomeState({
         ...homeState,
         onlineUsersVisible: true,
@@ -219,14 +172,14 @@ const Home: NextPage = () => {
     ) {
       helpers
         .getCallById(callId, homeState.user.userId)
-        .then((resp) => {
+        .then((resp: Call) => {
           setHomeState({
             ...homeState,
             activeCall: resp,
             activeHomeTab: "open",
           });
         })
-        .catch((err) => {
+        .catch((err: any) => {
           setModalState({
             ...modalState,
             content: {
@@ -312,74 +265,77 @@ const Home: NextPage = () => {
     resetHomeState();
   };
 
-  const stateLoadCalls = async (state: any) => {
-    let newState = { ...state };
+  const stateLoadCalls = async () => {
+    let newRefDataValues = RefDataDefault;
+    let newHomeStateValues = HomeStateDefault;
 
     try {
       //get users
       let allUsers = await helpers.getAllUsers();
-      newState.allUsers = allUsers.usersArr;
-      newState.usersById = allUsers.usersById;
+      newRefDataValues.users = allUsers.usersArr;
+      newRefDataValues.usersById = allUsers.usersById;
 
       //get options data
       let options = await helpers.getOptionsData();
-      newState.allOptions = options.options;
-      newState.hospitals = options.hospitals;
-      newState.hospitalsById = options.hospitalsById;
-      newState.callNeeds = options.callNeeds;
-      newState.orderChanges = options.orderChanges;
-      newState.orderChangeById = options.orderChangeById;
-      newState.statusById = options.statuses;
+      newRefDataValues.options = options.options;
+      newRefDataValues.hospitals = options.hospitals;
+      newRefDataValues.hospitalsById = options.hospitalsById;
+      newRefDataValues.callNeeds = options.callNeeds;
+      newRefDataValues.orderChanges = options.orderChanges;
+      newRefDataValues.orderChangeById = options.orderChangeById;
+      newRefDataValues.statusById = options.statuses;
 
       //get completed calls
-      newState.completedCalls = await getCompletedCalls(false);
+      newHomeStateValues.completedCalls = await getCompletedCalls(false);
 
       //get procedure data
       let procedureData = await helpers.getProcedureData();
-      newState.proceduresById = procedureData.proceduresById;
-      newState.procedures = procedureData.procedures;
+      newRefDataValues.proceduresById = procedureData.proceduresById;
+      newRefDataValues.procedures = procedureData.procedures;
 
       //get item data
-      let itemData = await helpers.getItemsData();
-      newState.itemsById = itemData;
+      const { items, itemsById } = await helpers.getItemsData();
+
+      newRefDataValues.items = items;
+      newRefDataValues.itemsById = itemsById;
 
       //get active calls
-      let activeCalls = await getActiveCalls(false);
-      newState.queueItems = activeCalls;
+      newHomeStateValues.queueItems = await getActiveCalls(false);
     } catch (err) {
       addToErrorArray(err);
     }
-    setHomeState({ ...homeState, ...newState });
+    setHomeState({ ...homeState, ...newHomeStateValues });
+    setRefDataState({ ...refDataState, ...newRefDataValues });
   };
 
-  const getCompletedCalls = async (newState?: Object) => {
+  const getCompletedCalls = async (newState?: Object): Promise<any> => {
     try {
-      let completedCalls = await helpers.getCompletedCalls();
-      let calls: any[] = completedCalls;
-      for (let i = 0; i < calls.length; i++) {
+      let completedCalls: Call[] = await helpers.getCompletedCalls();
+      for (let i = 0; i < completedCalls.length; i++) {
         //add nurse name to call for sorting
-        if (calls[i].completedBy) {
-          calls[i].completedByName =
-            homeState.usersById![calls[i].completedBy].fullname;
+        if (completedCalls[i].completedBy) {
+          completedCalls[i].completedByName =
+            refDataState?.usersById![completedCalls[i].completedBy!].fullname;
         } else {
-          calls[i].completedByName = null;
+          completedCalls[i].completedByName = null;
         }
         //add hospital name to call for sorting
-        if (calls[i].hospital) {
-          calls[i].hospitalName =
-            homeState.hospitalsById![calls[i].hospital].name;
+        if (completedCalls[i].hospital) {
+          completedCalls[i].hospitalName =
+            // @ts-ignore
+            refDataState?.hospitalsById![completedCalls[i].hospital!].name;
         } else {
-          calls[i].hospitalName = null;
+          completedCalls[i].hospitalName = null;
         }
       }
       if (newState) {
         return setHomeState({
           ...homeState,
           ...newState,
-          completedCalls: calls,
+          completedCalls,
         });
       }
-      return calls;
+      return completedCalls;
     } catch (err) {
       addToErrorArray(err);
     }
@@ -582,7 +538,7 @@ const Home: NextPage = () => {
   const linesSortByOnChange = (e: ChangeEvent<HTMLSelectElement>) => {
     let sortField = e.target.value;
     let lineProcedures = homeState.lineProcedures;
-    lineProcedures.sort((a, b) => {
+    lineProcedures.sort((a: any, b: any) => {
       if (a[sortField] > b[sortField]) return 1;
       if (a[sortField] < b[sortField]) return -1;
       return 0;
@@ -620,249 +576,255 @@ const Home: NextPage = () => {
   if (!homeState.user)
     return <Login loginType={"user"} loginCallback={loginCallback} />;
 
+  if (!refDataState) return <div>Loading...</div>;
+
   return (
-    <div>
-      {homeState.user && homeState.usersById && (
-        <div className="vas-container-fluid vas-home-container">
-          <header className="vas-main-header">
-            <div className="vas-header-left-container">
-              <h1
-                className="vas-home-header-title vas-pointer"
-                onClick={(e) => {
-                  window.location.reload();
-                }}
-              >
-                Salubrity
-              </h1>
-              <button
-                className="vas-button vas-home-add-call"
-                onClick={addCall}
-              >
-                Add Call
-              </button>
-            </div>
-            <div className="vas-header-right-container">
-              <span
-                title={homeState.user.isAvailable ? "Available" : "Offline"}
-                className={
-                  "vas-home-status-dot " +
-                  (!homeState.user.isAvailable ? "vas-user-offline" : "")
-                }
-              ></span>
-              <span className="vas-home-main-header-user-container">
-                <p
-                  className="vas-home-main-header-user vas-nowrap"
+    <>
+      <RefData.Provider value={refDataState}>
+        {homeState.user && refDataState.usersById && (
+          <div className="vas-container-fluid vas-home-container">
+            <header className="vas-main-header">
+              <div className="vas-header-left-container">
+                <h1
+                  className="vas-home-header-title vas-pointer"
                   onClick={(e) => {
-                    setHomeState({
-                      ...homeState,
-                      userMenuVisible: !homeState.userMenuVisible,
-                    });
+                    window.location.reload();
                   }}
                 >
-                  {homeState.user.fullname}
-                  <b>&#9660;</b>
-                </p>
-                {homeState.userMenuVisible && (
-                  <span>
-                    <div
-                      className="vas-home-clickguard"
-                      onClick={(e) => {
-                        setHomeState({ ...homeState, userMenuVisible: false });
-                      }}
-                    ></div>
-                    <ul className="vas-home-user-menu">
-                      <li onClick={toggleUserAvailability}>
-                        {homeState.user.isAvailable
-                          ? "Go 'Offline'"
-                          : "Go 'Online'"}
-                      </li>
-                      <li onClick={showOnlineUsers}>Show Online Users</li>
-                    </ul>
-                  </span>
-                )}
-              </span>
-              <button className="vas-home-main-header-logout" onClick={logout}>
-                Logout
-              </button>
-            </div>
-            <div
-              className={
-                "vas-home-online-users " +
-                (homeState.onlineUsersVisible
-                  ? "vas-home-show-online-users"
-                  : "")
-              }
-            >
-              <p
-                className="vas-home-hide-online-users"
-                onClick={hideOnlineUsers}
-              >
-                &times;
-              </p>
-              <div className="vas-home-online-users-list">
-                <p className="vas-home-online-users-title">Available Users:</p>
-                {homeState.onlineUsers.map((username, idx) => {
-                  return (
-                    <p
-                      key={username + idx}
-                      className="vas-capitalize vas-home-online-users-user"
-                    >
-                      {username}
-                    </p>
-                  );
-                })}
+                  Salubrity
+                </h1>
+                <button
+                  className="vas-button vas-home-add-call"
+                  onClick={addCall}
+                >
+                  Add Call
+                </button>
               </div>
-            </div>
-            {homeState.onlineUsersVisible && (
+              <div className="vas-header-right-container">
+                <span
+                  title={homeState.user.isAvailable ? "Available" : "Offline"}
+                  className={
+                    "vas-home-status-dot " +
+                    (!homeState.user.isAvailable ? "vas-user-offline" : "")
+                  }
+                ></span>
+                <span className="vas-home-main-header-user-container">
+                  <p
+                    className="vas-home-main-header-user vas-nowrap"
+                    onClick={(e) => {
+                      setHomeState({
+                        ...homeState,
+                        userMenuVisible: !homeState.userMenuVisible,
+                      });
+                    }}
+                  >
+                    {homeState.user.fullname}
+                    <b>&#9660;</b>
+                  </p>
+                  {homeState.userMenuVisible && (
+                    <span>
+                      <div
+                        className="vas-home-clickguard"
+                        onClick={(e) => {
+                          setHomeState({
+                            ...homeState,
+                            userMenuVisible: false,
+                          });
+                        }}
+                      ></div>
+                      <ul className="vas-home-user-menu">
+                        <li onClick={toggleUserAvailability}>
+                          {homeState.user.isAvailable
+                            ? "Go 'Offline'"
+                            : "Go 'Online'"}
+                        </li>
+                        <li onClick={showOnlineUsers}>Show Online Users</li>
+                      </ul>
+                    </span>
+                  )}
+                </span>
+                <button
+                  className="vas-home-main-header-logout"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </div>
               <div
-                className="vas-home-clickguard"
-                onClick={(e) => {
-                  setHomeState({ ...homeState, onlineUsersVisible: false });
+                className={
+                  "vas-home-online-users " +
+                  (homeState.onlineUsersVisible
+                    ? "vas-home-show-online-users"
+                    : "")
+                }
+              >
+                <p
+                  className="vas-home-hide-online-users"
+                  onClick={hideOnlineUsers}
+                >
+                  &times;
+                </p>
+                <div className="vas-home-online-users-list">
+                  <p className="vas-home-online-users-title">
+                    Available Users:
+                  </p>
+                  {homeState.onlineUsers.map((username, idx) => {
+                    return (
+                      <p
+                        key={username + "" + idx}
+                        className="vas-capitalize vas-home-online-users-user"
+                      >
+                        {username}
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+              {homeState.onlineUsersVisible && (
+                <div
+                  className="vas-home-clickguard"
+                  onClick={(e) => {
+                    setHomeState({ ...homeState, onlineUsersVisible: false });
+                  }}
+                ></div>
+              )}
+            </header>
+            <ul className="vas-home-nav-tabs">
+              <li
+                className="vas-home-nav-item"
+                data-isactive={
+                  homeState.activeHomeTab === "queue" ? true : false
+                }
+                onClick={() => {
+                  setTab("queue");
                 }}
-              ></div>
-            )}
-          </header>
-          <ul className="vas-home-nav-tabs">
-            <li
-              className="vas-home-nav-item"
-              data-isactive={homeState.activeHomeTab === "queue" ? true : false}
-              onClick={() => {
-                setTab("queue");
-              }}
-            >
-              <p className="vas-home-nav-item-text">Queue</p>
-              <div
-                className="vas-home-nav-item-refresh-bar"
-                ref={tabRefreshQueue}
-              ></div>
-            </li>
-            <li
-              className="vas-home-nav-item"
-              data-isactive={
-                homeState.activeHomeTab === "complete" ? true : false
-              }
-              onClick={() => {
-                setTab("complete");
-              }}
-            >
-              <p className="vas-home-nav-item-text">Completed</p>
-              <div
-                className="vas-home-nav-item-refresh-bar"
-                ref={tabRefreshCompleted}
-              ></div>
-            </li>
-            {/* <li className='vas-home-nav-item' data-isactive={homeState.activeHomeTab === 'lines' ? true : false} onClick={e=>{setTab('lines', e)}}>
+              >
+                <p className="vas-home-nav-item-text">Queue</p>
+                <div
+                  className="vas-home-nav-item-refresh-bar"
+                  ref={tabRefreshQueue}
+                ></div>
+              </li>
+              <li
+                className="vas-home-nav-item"
+                data-isactive={
+                  homeState.activeHomeTab === "complete" ? true : false
+                }
+                onClick={() => {
+                  setTab("complete");
+                }}
+              >
+                <p className="vas-home-nav-item-text">Completed</p>
+                <div
+                  className="vas-home-nav-item-refresh-bar"
+                  ref={tabRefreshCompleted}
+                ></div>
+              </li>
+              {/* <li className='vas-home-nav-item' data-isactive={homeState.activeHomeTab === 'lines' ? true : false} onClick={e=>{setTab('lines', e)}}>
                 <p className='vas-home-nav-item-text'>Lines</p>
                 <div className='vas-home-nav-item-refresh-bar'></div>
               </li> */}
-            {homeState.activeCall && (
-              <li
-                className={
-                  "vas-home-nav-item vas-status-" + homeState.activeCall.status
-                }
+              {homeState.activeCall && (
+                <li
+                  className={
+                    "vas-home-nav-item vas-status-" +
+                    homeState.activeCall.status
+                  }
+                  data-isactive={
+                    homeState.activeHomeTab === "open" ? true : false
+                  }
+                  onClick={() => {
+                    setTab("open");
+                  }}
+                >
+                  <p className="vas-home-nav-item-text">Open</p>
+                  <div
+                    className="vas-home-nav-item-refresh-bar"
+                    ref={tabRefreshOpen}
+                  ></div>
+                </li>
+              )}
+              {!homeState.lastUpdateHide && <UpdateTimer />}
+            </ul>
+            <div className="vas-home-tabContent">
+              <div
+                className="vas-home-page-container"
                 data-isactive={
-                  homeState.activeHomeTab === "open" ? true : false
+                  homeState.activeHomeTab === "queue" ? true : false
                 }
-                onClick={() => {
-                  setTab("open");
-                }}
               >
-                <p className="vas-home-nav-item-text">Open</p>
-                <div
-                  className="vas-home-nav-item-refresh-bar"
-                  ref={tabRefreshOpen}
-                ></div>
-              </li>
-            )}
-            {!homeState.lastUpdateHide && <UpdateTimer />}
-          </ul>
-          <div className="vas-home-tabContent">
-            <div
-              className="vas-home-page-container"
-              data-isactive={homeState.activeHomeTab === "queue" ? true : false}
-            >
-              <Queue
-                queueItems={homeState.queueItems}
-                hospitalsById={homeState.hospitalsById}
-                usersById={homeState.usersById}
-                selectJob={selectJob}
-              />
-            </div>
-            <div
-              className="vas-home-page-container"
-              data-isactive={
-                homeState.activeHomeTab === "complete" ? true : false
-              }
-            >
-              <ReturnedProcedures
-                completedCalls={homeState.completedCalls}
-                hospitalsById={homeState.hospitalsById}
-                usersById={homeState.usersById}
-                itemsById={homeState.itemsById}
-                proceduresById={homeState.proceduresById}
-                editCompletedCall={editCompletedCall}
-                orderChangeById={homeState.orderChangeById}
-              />
-            </div>
-            <div
-              className="vas-home-page-container"
-              data-isactive={homeState.activeHomeTab === "lines" ? true : false}
-            >
-              {homeState.hospitalsById && homeState.itemsById && (
+                <Queue
+                  queueItems={homeState.queueItems}
+                  selectJob={selectJob}
+                  // hospitalsById={homeState.hospitalsById}
+                  // usersById={homeState.usersById}
+                />
+              </div>
+              <div
+                className="vas-home-page-container"
+                data-isactive={
+                  homeState.activeHomeTab === "complete" ? true : false
+                }
+              >
+                <ReturnedProcedures
+                  completedCalls={homeState.completedCalls}
+                  editCompletedCall={editCompletedCall}
+                  // hospitalsById={homeState.hospitalsById}
+                  // usersById={homeState.usersById}
+                  // itemsById={homeState.itemsById}
+                  // proceduresById={homeState.proceduresById}
+                  // orderChangeById={homeState.orderChangeById}
+                />
+              </div>
+              <div
+                className="vas-home-page-container"
+                data-isactive={
+                  homeState.activeHomeTab === "lines" ? true : false
+                }
+              >
                 <LineProcedures
                   linesSortByOnChange={linesSortByOnChange}
                   lineProcedures={homeState.lineProcedures}
-                  hospitalsById={homeState.hospitalsById}
-                  usersById={homeState.usersById}
-                  itemsById={homeState.itemsById}
                   editCompletedCall={editCompletedCall}
                   reverseSort={reverseSort}
+                  // hospitalsById={homeState.hospitalsById}
+                  // usersById={homeState.usersById}
+                  // itemsById={homeState.itemsById}
                 />
-              )}
-            </div>
-            <div
-              className="vas-home-page-container"
-              data-isactive={homeState.activeHomeTab === "open" ? true : false}
-            >
-              {homeState.activeCall &&
-                homeState.hospitals &&
-                homeState.callNeeds &&
-                homeState.orderChanges &&
-                homeState.procedures &&
-                homeState.itemsById &&
-                homeState.statusById &&
-                homeState.allOptions.length > 0 && (
+              </div>
+              <div
+                className="vas-home-page-container"
+                data-isactive={
+                  homeState.activeHomeTab === "open" ? true : false
+                }
+              >
+                {homeState.activeCall && homeState.procedures && (
                   <EditProcedure
                     modalState={modalState}
                     updateModal={updateModal}
                     closeModal={closeModal}
-                    callNeeds={homeState.callNeeds}
-                    hospitals={homeState.hospitals}
-                    statusById={homeState.statusById}
-                    orderChanges={homeState.orderChanges}
                     activeCall={homeState.activeCall}
                     procedures={homeState.procedures}
-                    usersById={homeState.usersById}
-                    itemsById={homeState.itemsById}
                     closeRecordCallback={closeRecordCallback}
                     user={homeState.user}
                     refreshUserSession={refreshUserSession}
                     saveActiveCall={saveActiveCall}
                   />
                 )}
+              </div>
             </div>
+            {modalState.content && (
+              <Modal
+                modalState={modalState}
+                getConfirmation={getModalConfirmation}
+                user={homeState.user}
+                closeModal={closeModal}
+              />
+            )}
           </div>
-          {modalState.content && (
-            <Modal
-              modalState={modalState}
-              getConfirmation={getModalConfirmation}
-              user={homeState.user}
-              closeModal={closeModal}
-            />
-          )}
-        </div>
-      )}
-    </div>
+        )}
+      </RefData.Provider>
+    </>
   );
 };
 

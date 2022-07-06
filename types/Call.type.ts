@@ -1,4 +1,4 @@
-export default interface Call {
+export interface Call {
   [key: string | number]: any;
   addComments: undefined | string;
   completedAt: undefined | Date;

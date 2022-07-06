@@ -19,7 +19,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "util/helpers.js",
+    "util/helpers.ts",
     "components/Login.js"
   ],
   "exclude": ["node_modules"]

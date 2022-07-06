@@ -1,4 +1,7 @@
-export default interface DropdownOption {
-  id: number | string;
-  name: string;
+export interface DropdownOption {
+  [key: number]: {
+    id: number;
+    name: string;
+    seq?: number;
+  };
 }

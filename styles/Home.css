@@ -153,21 +153,17 @@
 }
 .vas-home-nav-item {
   position: relative;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  display: inline-block;
+  display: grid;
+  align-items: center;
   background: #008b8b;
   margin-right: 5px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   color: white;
   cursor: pointer;
-  line-height: 190%;
-  height: 100%;
   padding: 0 8px;
   transition: 1s background-color linear;
+  user-select: none;
 }
 .vas-home-nav-item[data-isactive="true"] {
   background: cadetblue;
@@ -274,6 +270,7 @@
   display: flex;
   background: cadetblue;
   min-height: 15px;
+  border-top-right-radius: 5px;
 }
 .vas-table-thead-row div {
   color: white;
@@ -281,21 +278,20 @@
   padding: 10px 0 10px 5px;
 }
 .vas-home-table-tr {
-  padding: 8px 0 8px 1%;
+  padding: 8px;
   width: 100%;
   box-shadow: inset 0px 3px 3px -3px black;
   cursor: pointer;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   transition: 1s background-color linear;
 }
 .vas-home-table-job-name {
-  border-bottom: solid 1px grey;
+  border-bottom: solid 2px;
   padding-bottom: 3px;
   font-size: 125%;
   color: darkcyan;
   display: flex;
-  width: 95%;
   font-weight: bold;
 }
 .vas-status-2 .vas-home-table-job-name {
@@ -306,18 +302,13 @@
 .vas-home-table-row-is-open .vas-home-table-job-name {
   color: white;
   text-shadow: none;
-  border-color: lightsteelblue;
-}
-.vas-home-table-tr-inner {
-  width: 98%;
+  border-color: white;
 }
 .vas-home-table-tr-inner p {
-  width: 47%;
-  display: inline-flex;
-  align-items: center;
-  padding: 1% 0% 1% 0;
+  display: flex;
+  width: 49%;
   border-bottom: solid 1px grey;
-  margin-right: 3%;
+  padding: 5px 0;
 }
 .vas-home-table-tr-inner p:nth-child(3),
 .vas-home-table-tr-inner p:nth-child(4) {

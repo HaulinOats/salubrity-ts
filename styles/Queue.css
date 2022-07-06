@@ -1,1 +1,9 @@
 /* Styles exist in Home.css (older code before I modularized the Queue into it's own component) */
+.vas-queue-main-right {
+  flex-grow: 1;
+}
+.vas-queue-table-tr-inner-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -32,7 +32,7 @@ export default class Queue extends Component {
                       {getDateFromObjectId(item._id)}
                     </Moment>
                   </div>
-                  <div className="vas-width-90">
+                  <div className="vas-queue-main-right">
                     <p className="vas-home-table-job-name">
                       {item.job}
                       {item.customJob ? " - " + item.customJob : ""}
@@ -46,32 +46,36 @@ export default class Queue extends Component {
                       </b>
                     </p>
                     <div className="vas-home-table-tr-inner">
-                      <p>
-                        <b>Room:</b>
-                        <i className="vas-uppercase">{item.room}</i>
-                      </p>
-                      <p>
-                        <b>Hospital:</b>
-                        <i className="vas-capitalize">
-                          {this.props.hospitalsById[item.hospital]
-                            ? this.props.hospitalsById[item.hospital].name
-                            : "N/A"}
-                        </i>
-                      </p>
-                      <p>
-                        <b>Contact:</b>
-                        <i>{item.contact ? item.contact : "N/A"}</i>
-                      </p>
-                      <p>
-                        <b>Nurse:</b>
-                        <i className="vas-capitalize">
-                          {this.props.usersById[item.openBy]
-                            ? this.props.usersById[item.openBy].fullname
-                            : item.openBy
-                            ? item.openBy
-                            : "N/A"}
-                        </i>
-                      </p>
+                      <span className="vas-queue-table-tr-inner-row">
+                        <p>
+                          <b>Room:</b>
+                          <i className="vas-uppercase">{item.room}</i>
+                        </p>
+                        <p>
+                          <b>Hospital:</b>
+                          <i className="vas-capitalize">
+                            {this.props.hospitalsById[item.hospital]
+                              ? this.props.hospitalsById[item.hospital].name
+                              : "N/A"}
+                          </i>
+                        </p>
+                      </span>
+                      <span className="vas-queue-table-tr-inner-row">
+                        <p>
+                          <b>Contact:</b>
+                          <i>{item.contact ? item.contact : "N/A"}</i>
+                        </p>
+                        <p>
+                          <b>Nurse:</b>
+                          <i className="vas-capitalize">
+                            {this.props.usersById[item.openBy]
+                              ? this.props.usersById[item.openBy].fullname
+                              : item.openBy
+                              ? item.openBy
+                              : "N/A"}
+                          </i>
+                        </p>
+                      </span>
                     </div>
                   </div>
                 </div>

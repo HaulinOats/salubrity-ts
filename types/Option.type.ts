@@ -1,7 +1,13 @@
-export default interface Option {
-  optionId: number;
-  name: string;
-  inputType: string;
+export interface Option {
   callFieldName: string;
-  options: undefined | Object[];
+  inputType: string;
+  name: string;
+  optionId: number;
+  options:
+    | {
+        id: number;
+        name: string;
+        seq?: number;
+      }[]
+    | null;
 }
