@@ -28,7 +28,7 @@ export default class Filters extends Component {
     }, 1000);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let userOptions = [];
     let users = this.props.allUsers;
     users.sort((a, b) => {

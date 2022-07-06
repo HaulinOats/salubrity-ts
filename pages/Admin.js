@@ -85,7 +85,7 @@ export default class Admin extends Component {
     this.updateAdminPassword = this.updateAdminPassword.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (ls("currentUser")) {
       this.setState(
         {

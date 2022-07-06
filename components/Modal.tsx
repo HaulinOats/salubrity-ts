@@ -18,17 +18,6 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
     addCallInputsValidated: false,
   });
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState(
-  //     {
-  //       modalTitle: nextProps.modalTitle,
-  //       modalMessage: nextProps.modalMessage,
-  //       isConfirmation: nextProps.isConfirmation,
-  //     },
-  //     this.aggregateData
-  //   );
-  // }
-
   useEffect(() => {
     if (props.modalState.content!.title.toLowerCase() === "add call") {
       setModalState({ ...modalState, isAddCall: true });

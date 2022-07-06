@@ -23,7 +23,7 @@ export default class ReturnedProcedures extends Component {
     this.aggregateData();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(
       {
         insertionAgg: nextProps.insertionAgg,

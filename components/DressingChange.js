@@ -6,7 +6,7 @@ export default class DressingChange extends Component {
     this.state = {};
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // this.setState({
     //   currentRecord:nextProps.activeRecord,
     // })
