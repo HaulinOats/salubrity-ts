@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { getDateFromObjectId } from "../util/helpers";
+import helpers from "../util/helpers";
 import Moment from "react-moment";
 import { RefData } from "../pages";
 import { Call } from "../types/Call.type";
@@ -31,10 +31,10 @@ const Queue: React.FC<QueueProps> = (props) => {
               >
                 <div className="vas-home-table-time vas-width-10">
                   <Moment format="HH:mm">
-                    {getDateFromObjectId(item._id)}
+                    {helpers.getDateFromObjectId(item._id)}
                   </Moment>
                   <Moment className="vas-home-table-time-date" format="M/D">
-                    {getDateFromObjectId(item._id)}
+                    {helpers.getDateFromObjectId(item._id)}
                   </Moment>
                 </div>
                 <div className="vas-queue-main-right">

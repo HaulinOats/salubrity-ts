@@ -13,7 +13,6 @@ import moment, { Moment } from "moment";
 import DatePicker from "react-datepicker";
 import { DebounceInput } from "react-debounce-input";
 import { Call } from "../types/Call.type";
-import { Procedure } from "../types/Procedure.type";
 import { User } from "../types/User.type";
 import { Modal as ModalType } from "../types/Modal.type";
 import { RefData } from "../pages";

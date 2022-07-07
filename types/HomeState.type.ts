@@ -9,7 +9,7 @@ export interface HomeState {
   confirmationType: undefined | string;
   errorArr: string[];
   lastUpdateHide: boolean;
-  lineProcedures: Procedure[];
+  lineProcedures: Call[];
   linesSortBy: string;
   onlineUsersVisible: boolean;
   onlineUsers: string[];
@@ -27,7 +27,7 @@ export const HomeStateDefault = {
   confirmationType: undefined,
   errorArr: [] as string[],
   lastUpdateHide: false,
-  lineProcedures: [] as Procedure[],
+  lineProcedures: [] as Call[],
   linesSortBy: "dressingChangeDate",
   onlineUsers: [] as string[],
   onlineUsersVisible: false,

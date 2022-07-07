@@ -161,8 +161,8 @@ const Home: NextPage = () => {
 
   const editCompletedCall = (
     callId: string,
-    completedBy: number,
-    dressingChangeDate: Date
+    completedBy: number | undefined,
+    dressingChangeDate: Date | undefined
   ) => {
     if (!homeState.user) return;
     let isAdmin =
@@ -199,6 +199,10 @@ const Home: NextPage = () => {
         },
       });
     }
+  };
+
+  const updateCompletedCalls = (calls: Call[]) => {
+    setHomeState({ ...homeState, completedCalls: calls });
   };
 
   const closeRecordCallback = (shouldDelete?: boolean) => {
@@ -788,8 +792,10 @@ const Home: NextPage = () => {
                 }
               >
                 <ReturnedProcedures
+                  user={homeState.user}
                   completedCalls={homeState.completedCalls}
                   editCompletedCall={editCompletedCall}
+                  updateCompletedCalls={updateCompletedCalls}
                   // hospitalsById={homeState.hospitalsById}
                   // usersById={homeState.usersById}
                   // itemsById={homeState.itemsById}
@@ -808,9 +814,6 @@ const Home: NextPage = () => {
                   lineProcedures={homeState.lineProcedures}
                   editCompletedCall={editCompletedCall}
                   reverseSort={reverseSort}
-                  // hospitalsById={homeState.hospitalsById}
-                  // usersById={homeState.usersById}
-                  // itemsById={homeState.itemsById}
                 />
               </div>
               <div

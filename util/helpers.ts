@@ -5,11 +5,10 @@ import { Item } from "../types/Item.type";
 import { Option } from "../types/Option.type";
 import { Procedure } from "../types/Procedure.type";
 
-export const getDateFromObjectId = (objId: string) => {
-  if (objId) return new Date(parseInt(objId.substring(0, 8), 16) * 1000);
-};
-
 export default {
+  getDateFromObjectId: (objId: string) => {
+    return new Date(parseInt(objId.substring(0, 8), 16) * 1000);
+  },
   getItemData: async (openBy: number): Promise<any> => {
     try {
       let itemData = await fetch("/api/main", {
