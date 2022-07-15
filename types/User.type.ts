@@ -6,4 +6,6 @@ export interface User {
   lastLogin: number;
   role: string;
   userId: number;
+  username: string;
+  password?: string;
 }

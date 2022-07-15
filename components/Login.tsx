@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import Modal from "./Modal";
 import axios from "axios";
-import { Modal as ModalType } from "../types/Modal.type";
+import { ModalState } from "../types/ModalState.type";
 import { Call } from "../types/Call.type";
 import { User } from "../types/User.type";
 
 interface LoginProps {
   loginCallback: (data: any) => void;
   loginType: string;
-  modalState: ModalType;
-  closeModal: (modalObj: { call?: Call; modalData?: ModalType }) => void;
+  modalState: ModalState;
+  closeModal: (modalObj: { call?: Call; modalData?: ModalState }) => void;
   getModalConfirmation: () => void;
   user?: User;
 }

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Call } from "../types/Call.type";
-import { Modal } from "../types/Modal.type";
+import { ModalState } from "../types/ModalState.type";
 import { User } from "../types/User.type";
 import AddCall from "./AddCall";
 
 interface ModalProps {
-  modalState: Modal;
+  modalState: ModalState;
   getConfirmation: (isConfirmed: boolean) => void;
   user: User;
-  closeModal: (modalObj: { call?: Call; modalData?: Modal }) => void;
+  closeModal: (modalObj: { call?: Call; modalData?: ModalState }) => void;
 }
 
 const Modal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
   });
 
   useEffect(() => {
-    if (props.modalState.content!.title.toLowerCase() === "add call") {
+    if (props.modalState.content!.title!.toLowerCase() === "add call") {
       setModalState({ ...modalState, isAddCall: true });
     }
   }, []);

@@ -1,4 +1,5 @@
 export interface Option {
+  id: string;
   callFieldName: string;
   inputType: string;
   name: string;

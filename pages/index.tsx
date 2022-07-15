@@ -15,13 +15,14 @@ import Queue from "../components/Queue";
 import EditProcedure from "../components/EditProcedure";
 import LineProcedures from "../components/LineProcedures";
 import Modal from "../components/Modal";
-import { Modal as ModalType } from "../types/Modal.type";
+import { ModalState, ModalStateDefault } from "../types/ModalState.type";
 import ReturnedProcedures from "../components/ReturnedProcedures";
 import { User } from "../types/User.type";
 import helpers from "../util/helpers";
 import { Call } from "../types/Call.type";
 import { RefData as RefDataType, RefDataDefault } from "../types/RefData.type";
 import { HomeState, HomeStateDefault } from "../types/HomeState.type";
+import Header from "../components/Header";
 
 export const RefData = createContext<RefDataType>(RefDataDefault);
 
@@ -35,29 +36,23 @@ const Home: NextPage = () => {
   );
 
   const [lastLogin, setLastLogin] = useState(Date.now());
-  const [refDataState, setRefDataState] = useState<undefined | RefDataType>(
-    undefined
-  );
+  const [refDataState, setRefDataState] = useState<RefDataType>(RefDataDefault);
   const [homeState, setHomeState] = useState<HomeState>(HomeStateDefault);
-  const [modalState, setModalState] = useState<ModalType>({
-    content: undefined,
-    confirmation: false,
-    autoClose: false,
-  });
+  const [modalState, setModalState] = useState<ModalState>(ModalStateDefault);
 
   //on component mount/unmount
   useEffect(() => {
     let newHomeState: any = {};
     let user = getItemFromStorage("user");
-    let activeHomeTab = getItemFromStorage("activeHomeTab");
+    let activeTab = getItemFromStorage("activeTab");
 
     if (user) {
       newHomeState.user = user;
       startSessionInterval();
     }
 
-    if (activeHomeTab) {
-      newHomeState.activeHomeTab = activeHomeTab;
+    if (activeTab) {
+      newHomeState.activeTab = activeTab;
     }
 
     stateLoadCalls(newHomeState);
@@ -76,8 +71,8 @@ const Home: NextPage = () => {
   }, [refDataState]);
 
   useEffect(() => {
-    setTab(homeState.activeHomeTab);
-  }, [homeState.activeHomeTab]);
+    setTab(homeState.activeTab);
+  }, [homeState.activeTab]);
 
   useEffect(() => {
     if (modalState.autoClose) {
@@ -98,8 +93,8 @@ const Home: NextPage = () => {
     }
   }, [homeState.user]);
 
-  const resetHomeState = () => {
-    setHomeState(HomeStateDefault);
+  const updateHomeState = (stateObj: Object) => {
+    setHomeState({ ...homeState, ...stateObj });
   };
 
   const startSessionInterval = () => {
@@ -178,7 +173,7 @@ const Home: NextPage = () => {
           setHomeState({
             ...homeState,
             activeCall: resp,
-            activeHomeTab: "open",
+            activeTab: "open",
           });
         })
         .catch((err: any) => {
@@ -222,7 +217,7 @@ const Home: NextPage = () => {
         setHomeState({
           ...homeState,
           activeCall: undefined,
-          activeHomeTab: "queue",
+          activeTab: "queue",
           queueItems,
         });
       })
@@ -267,7 +262,7 @@ const Home: NextPage = () => {
 
   const logout = () => {
     stopSessionInterval();
-    resetHomeState();
+    setHomeState(HomeStateDefault);
   };
 
   const stateLoadCalls = async (newHomeState: any) => {
@@ -379,15 +374,15 @@ const Home: NextPage = () => {
     switch (tab) {
       case "open":
         refreshAnimation(tabRefreshOpen);
-        setHomeState({ ...homeState, activeHomeTab: tab });
+        setHomeState({ ...homeState, activeTab: tab });
         break;
       case "complete":
         refreshAnimation(tabRefreshCompleted);
-        getCompletedCalls({ activeHomeTab: tab });
+        getCompletedCalls({ activeTab: tab });
         break;
       case "queue":
         refreshAnimation(tabRefreshQueue);
-        getActiveCalls({ activeHomeTab: tab });
+        getActiveCalls({ activeTab: tab });
         break;
       case "lines":
         getOpenLineProcedures();
@@ -399,16 +394,6 @@ const Home: NextPage = () => {
     const className = "vas-home-refresh-bar-activate";
     ref.current?.classList.add(className);
     setTimeout(() => ref.current?.classList.remove(className), 1000);
-  };
-
-  const addCall = () => {
-    setModalState({
-      ...modalState,
-      content: {
-        title: "Add Call",
-        message: "",
-      },
-    });
   };
 
   const getOpenLineProcedures = () => {
@@ -440,7 +425,7 @@ const Home: NextPage = () => {
     setHomeState({ ...homeState, errorArr: errArr });
   };
 
-  const closeModal = (modalObj: { call?: Call; modalData?: ModalType }) => {
+  const closeModal = (modalObj: { call?: Call; modalData?: ModalState }) => {
     if (modalObj.call) {
       let callData = { ...modalObj.call };
       let queueItems = homeState.queueItems;
@@ -449,7 +434,7 @@ const Home: NextPage = () => {
         ...homeState,
         queueItems,
         activeCall: callData.openBy ? callData : homeState.activeCall,
-        activeHomeTab: callData.openBy ? "open" : homeState.activeHomeTab,
+        activeTab: callData.openBy ? "open" : homeState.activeTab,
       });
       setModalState({
         ...modalState,
@@ -460,7 +445,7 @@ const Home: NextPage = () => {
     }
   };
 
-  const updateModal = (modalData: ModalType) => {
+  const updateModalState = (modalData: any) => {
     setModalState({ ...setModalState, ...modalData });
   };
 
@@ -497,7 +482,7 @@ const Home: NextPage = () => {
                 setHomeState({
                   ...homeState,
                   activeCall: call,
-                  activeHomeTab: "open",
+                  activeTab: "open",
                 });
               }
             })
@@ -518,7 +503,7 @@ const Home: NextPage = () => {
               setHomeState({
                 ...homeState,
                 activeCall: resp.data,
-                activeHomeTab: "open",
+                activeTab: "open",
               });
             }
           })
@@ -528,7 +513,7 @@ const Home: NextPage = () => {
       }
     } else {
       let tempState: any = {
-        activeHomeTab: "open",
+        activeTab: "open",
       };
       if (call._id !== homeState.activeCall._id) {
         tempState = {
@@ -610,118 +595,19 @@ const Home: NextPage = () => {
       <RefData.Provider value={refDataState}>
         {homeState.user && refDataState.usersById && (
           <div className="vas-container-fluid vas-home-container">
-            <header className="vas-main-header">
-              <div className="vas-header-left-container">
-                <h1
-                  className="vas-home-header-title vas-pointer"
-                  onClick={(e) => {
-                    window.location.reload();
-                  }}
-                >
-                  Salubrity
-                </h1>
-                <button
-                  className="vas-button vas-home-add-call"
-                  onClick={addCall}
-                >
-                  Add Call
-                </button>
-              </div>
-              <div className="vas-header-right-container">
-                <span
-                  title={homeState.user.isAvailable ? "Available" : "Offline"}
-                  className={
-                    "vas-home-status-dot " +
-                    (!homeState.user.isAvailable ? "vas-user-offline" : "")
-                  }
-                ></span>
-                <span className="vas-home-main-header-user-container">
-                  <p
-                    className="vas-home-main-header-user vas-nowrap"
-                    onClick={(e) => {
-                      setHomeState({
-                        ...homeState,
-                        userMenuVisible: !homeState.userMenuVisible,
-                      });
-                    }}
-                  >
-                    {homeState.user.fullname}
-                    <b>&#9660;</b>
-                  </p>
-                  {homeState.userMenuVisible && (
-                    <span>
-                      <div
-                        className="vas-home-clickguard"
-                        onClick={(e) => {
-                          setHomeState({
-                            ...homeState,
-                            userMenuVisible: false,
-                          });
-                        }}
-                      ></div>
-                      <ul className="vas-home-user-menu">
-                        <li onClick={toggleUserAvailability}>
-                          {homeState.user.isAvailable
-                            ? "Go 'Offline'"
-                            : "Go 'Online'"}
-                        </li>
-                        <li onClick={showOnlineUsers}>Show Online Users</li>
-                      </ul>
-                    </span>
-                  )}
-                </span>
-                <button
-                  className="vas-home-main-header-logout"
-                  onClick={logout}
-                >
-                  Logout
-                </button>
-              </div>
-              <div
-                className={
-                  "vas-home-online-users " +
-                  (homeState.onlineUsersVisible
-                    ? "vas-home-show-online-users"
-                    : "")
-                }
-              >
-                <p
-                  className="vas-home-hide-online-users"
-                  onClick={hideOnlineUsers}
-                >
-                  &times;
-                </p>
-                <div className="vas-home-online-users-list">
-                  <p className="vas-home-online-users-title">
-                    Available Users:
-                  </p>
-                  {homeState.onlineUsers.map((username, idx) => {
-                    return (
-                      <p
-                        key={username + "" + idx}
-                        className="vas-capitalize vas-home-online-users-user"
-                      >
-                        {username}
-                      </p>
-                    );
-                  })}
-                </div>
-              </div>
-              {homeState.onlineUsersVisible && (
-                <div
-                  className="vas-home-clickguard"
-                  onClick={(e) => {
-                    setHomeState({ ...homeState, onlineUsersVisible: false });
-                  }}
-                ></div>
-              )}
-            </header>
+            <Header
+              updateModalState={updateModalState}
+              homeState={homeState}
+              updateHomeState={updateHomeState}
+              toggleUserAvailability={toggleUserAvailability}
+              showOnlineUsers={showOnlineUsers}
+              hideOnlineUsers={hideOnlineUsers}
+              logout={logout}
+            />
             <ul className="vas-home-nav-tabs">
               <li
                 className="vas-home-nav-item"
-                data-isactive={
-                  homeState.activeHomeTab === "queue" ? true : false
-                }
+                data-isactive={homeState.activeTab === "queue" ? true : false}
                 onClick={() => {
                   setTab("queue");
                 }}
@@ -735,7 +621,7 @@ const Home: NextPage = () => {
               <li
                 className="vas-home-nav-item"
                 data-isactive={
-                  homeState.activeHomeTab === "complete" ? true : false
+                  homeState.activeTab === "complete" ? true : false
                 }
                 onClick={() => {
                   setTab("complete");
@@ -747,19 +633,13 @@ const Home: NextPage = () => {
                   ref={tabRefreshCompleted}
                 ></div>
               </li>
-              {/* <li className='vas-home-nav-item' data-isactive={homeState.activeHomeTab === 'lines' ? true : false} onClick={e=>{setTab('lines', e)}}>
-                <p className='vas-home-nav-item-text'>Lines</p>
-                <div className='vas-home-nav-item-refresh-bar'></div>
-              </li> */}
               {homeState.activeCall && (
                 <li
                   className={
                     "vas-home-nav-item vas-status-" +
                     homeState.activeCall.status
                   }
-                  data-isactive={
-                    homeState.activeHomeTab === "open" ? true : false
-                  }
+                  data-isactive={homeState.activeTab === "open" ? true : false}
                   onClick={() => {
                     setTab("open");
                   }}
@@ -776,9 +656,7 @@ const Home: NextPage = () => {
             <div className="vas-home-tabContent">
               <div
                 className="vas-home-page-container"
-                data-isactive={
-                  homeState.activeHomeTab === "queue" ? true : false
-                }
+                data-isactive={homeState.activeTab === "queue" ? true : false}
               >
                 <Queue
                   queueItems={homeState.queueItems}
@@ -788,7 +666,7 @@ const Home: NextPage = () => {
               <div
                 className="vas-home-page-container"
                 data-isactive={
-                  homeState.activeHomeTab === "complete" ? true : false
+                  homeState.activeTab === "complete" ? true : false
                 }
               >
                 <ReturnedProcedures
@@ -796,18 +674,11 @@ const Home: NextPage = () => {
                   completedCalls={homeState.completedCalls}
                   editCompletedCall={editCompletedCall}
                   updateCompletedCalls={updateCompletedCalls}
-                  // hospitalsById={homeState.hospitalsById}
-                  // usersById={homeState.usersById}
-                  // itemsById={homeState.itemsById}
-                  // proceduresById={homeState.proceduresById}
-                  // orderChangeById={homeState.orderChangeById}
                 />
               </div>
               <div
                 className="vas-home-page-container"
-                data-isactive={
-                  homeState.activeHomeTab === "lines" ? true : false
-                }
+                data-isactive={homeState.activeTab === "lines" ? true : false}
               >
                 <LineProcedures
                   linesSortByOnChange={linesSortByOnChange}
@@ -818,14 +689,12 @@ const Home: NextPage = () => {
               </div>
               <div
                 className="vas-home-page-container"
-                data-isactive={
-                  homeState.activeHomeTab === "open" ? true : false
-                }
+                data-isactive={homeState.activeTab === "open" ? true : false}
               >
                 {homeState.activeCall && homeState.procedures && (
                   <EditProcedure
                     modalState={modalState}
-                    updateModal={updateModal}
+                    updateModalState={updateModalState}
                     closeModal={closeModal}
                     activeCall={homeState.activeCall}
                     closeRecordCallback={closeRecordCallback}

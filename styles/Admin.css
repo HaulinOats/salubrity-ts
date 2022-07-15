@@ -1,13 +1,12 @@
-
 .vas-admin-main-title {
   border-right: solid 2px darkgrey;
   padding-right: 10px;
-  color:gold;
+  color: gold;
   font-weight: bold;
-  font-size:110%;
+  font-size: 110%;
   white-space: nowrap;
 }
-.vas-admin-h3{
+.vas-admin-h3 {
   color: cadetblue;
   font-size: 120%;
   text-shadow: 0px 1px 0px black;
@@ -22,16 +21,15 @@
   margin-bottom: 10px;
 }
 .vas-admin-menu {
-
 }
 .vas-admin-menu-item {
-  display:inline-block;
-  margin:0 10px;
+  display: inline-block;
+  margin: 0 10px;
   cursor: pointer;
-  color:darkgray;
+  color: darkgray;
   white-space: nowrap;
 }
-.vas-admin-menu-item[data-isactive='true'] {
+.vas-admin-menu-item[data-isactive="true"] {
   color: white;
   text-shadow: 0px 0px 3px black;
 }
@@ -43,44 +41,44 @@
   white-space: nowrap;
 }
 .vas-admin-logout {
-  display:inline-flex;
-  margin-left:10px;
-  background:cadetblue;
-  color:white;
-  padding:5px;
+  display: inline-flex;
+  margin-left: 10px;
+  background: cadetblue;
+  color: white;
+  padding: 5px;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow:1px 1px 2px black;
+  box-shadow: 1px 1px 2px black;
   user-select: none;
 }
-.vas-admin-logout:active{
-  border:solid thin coral;
+.vas-admin-logout:active {
+  border: solid thin coral;
 }
 .vas-admin-main-content {
-  margin-top:45px;
-  padding:5px;
+  margin-top: 45px;
+  padding: 5px;
 }
 .vas-admin-page-container {
-  display:none;
+  display: none;
 }
-.vas-admin-page-container[data-isactive='true'] {
-  display:block;
+.vas-admin-page-container[data-isactive="true"] {
+  display: block;
 }
 
 /* Users Page */
 .vas-admin-add-user-container label {
-  display:block;
-  margin-top:15px;
-  margin-bottom:5px;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
-.vas-admin-add-user-container input[type='text'] {
-  border:solid 2px darkgrey;
+.vas-admin-add-user-container input[type="text"] {
+  border: solid 2px darkgrey;
   border-radius: 3px;
-  padding-left:5px;
+  padding-left: 5px;
   min-width: 300px;
-  height:35px;
+  height: 35px;
 }
-.vas-admin-add-user-container input[type='checkbox']{
+.vas-admin-add-user-container input[type="checkbox"] {
   transform: scale(1.8);
   margin-left: 4px;
   margin-top: 5px;
@@ -89,23 +87,22 @@
   display: block;
   margin: 15px 0;
 }
-.vas-admin-add-user-notes{
-  
-  margin-top:10px;
-  color:darkgrey;
+.vas-admin-add-user-notes {
+  margin-top: 10px;
+  color: darkgrey;
   font-style: italic;
 }
 .vas-admin-added-user-row {
-  margin-top:5px;
+  margin-top: 5px;
 }
 .vas-admin-added-user-row b {
-  font-weight:bold;
+  font-weight: bold;
 }
 .vas-admin-table {
-  width:100%;
-  margin-top:10px;
+  width: 100%;
+  margin-top: 10px;
 }
-.vas-admin-table th{
+.vas-admin-table th {
   background: darkgrey;
   padding: 8px 0px 8px 5px;
   border: solid 2px grey;
@@ -115,9 +112,9 @@
   border-bottom: solid thin grey;
 }
 .vas-admin-table td {
-  padding-top:5px;
-  padding-bottom:5px;
-  padding-left:5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
 }
 .admin-nostretch {
   white-space: nowrap;
@@ -131,13 +128,16 @@
   cursor: pointer;
 }
 .vas-admin-manage-users-pw {
-  cursor:pointer;
+  cursor: pointer;
   user-select: none;
   white-space: nowrap;
 }
+.vas-admin-manage-users-pw span {
+  font-style: italic;
+}
 .vas-admin-no-calls-container {
-  background:lightblue;
-  padding:5px;
+  background: lightblue;
+  padding: 5px;
 }
 .vas-admin-reverse-sort-btn {
   padding: 5px 4px;
@@ -147,7 +147,7 @@
 }
 .vas-admin-custom-item-subfield,
 .vas-admin-custom-item-subvalue {
-  display:inline-block;
+  display: inline-block;
 }
 .vas-admin-custom-item-subfield {
   font-weight: bold;
@@ -155,7 +155,7 @@
   color: midnightblue;
 }
 .vas-admin-custom-item-subvalue {
-  float:right;
+  float: right;
   text-transform: capitalize;
 }
 .vas-admin-custom-table-item-comments {
@@ -163,11 +163,11 @@
   font-size: 90%;
   border-top: solid 1px darkgrey;
 }
-.vas-admin-custom-table-item-comments p{
-  width:50%;
-  display:inline-block;
+.vas-admin-custom-table-item-comments p {
+  width: 50%;
+  display: inline-block;
 }
-.vas-admin-custom-table-item-comments b{
+.vas-admin-custom-table-item-comments b {
   font-weight: bold;
 }
 .vas-admin-col-3-header {
@@ -176,39 +176,39 @@
   font-weight: bold;
 }
 .vas-admin-filter-container {
-  display:inline-block;
-  margin-right:15px;
-  margin-top:5px;
+  display: inline-block;
+  margin-right: 15px;
+  margin-top: 5px;
 }
 .vas-admin-list-table {
-  background:white;
-  border-top:solid 1px black;
-  border-right:solid 1px black;
+  background: white;
+  border-top: solid 1px black;
+  border-right: solid 1px black;
 }
-.vas-admin-list-table tr{
-  border-bottom:solid 1px black;
+.vas-admin-list-table tr {
+  border-bottom: solid 1px black;
 }
 .vas-admin-list-table th {
-  background:cadetblue;
-  color:white;
-  padding:5px;
-  border-left:solid 1px black;
+  background: cadetblue;
+  color: white;
+  padding: 5px;
+  border-left: solid 1px black;
 }
 .vas-admin-list-table td {
-  border-left:solid 1px black;
-  padding:5px;
+  border-left: solid 1px black;
+  padding: 5px;
 }
 .vas-admin-hospital-input-container {
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 .vas-admin-hospital-input-submit {
-  margin-top:10px;
+  margin-top: 10px;
 }
 .vas-admin-query-dropdown-2 option {
   text-transform: capitalize;
 }
 .vas-admin-custom-table-date {
-  font-size:90%;
+  font-size: 90%;
 }
 .vas-admin-is-open-container {
   padding: 10px 5px;
@@ -217,29 +217,29 @@
   display: flex;
   align-items: center;
 }
-.vas-admin-is-open-container div{
-  display:inline-block;
+.vas-admin-is-open-container div {
+  display: inline-block;
 }
-.vas-admin-is-open-container b{
+.vas-admin-is-open-container b {
   font-weight: bold;
 }
 .vas-admin-is-open-container button {
-  float:right;
+  float: right;
 }
 .vas-red-button {
-  background:red;
+  background: red;
 }
 .vas-admin-order-change {
-  font-size:85%;
+  font-size: 85%;
 }
 .vas-admin-menu-toggle {
   white-space: nowrap;
-  cursor:pointer;
+  cursor: pointer;
 }
 .vas-admin-menu-toggle {
-  display:none;
-  margin-left:10px;
-  padding:8px 0;
+  display: none;
+  margin-left: 10px;
+  padding: 8px 0;
 }
 .vas-admin-menu-visible {
   display: block !important;
@@ -253,71 +253,68 @@
   background: white;
   z-index: 1;
 }
-.vas-admin-menu-visible 
-.vas-admin-menu-item {
-  display:block;
-  padding:8px 5px;
-  margin:0;
-  color:black;
+.vas-admin-menu-visible .vas-admin-menu-item {
+  display: block;
+  padding: 8px 5px;
+  margin: 0;
+  color: black;
   text-shadow: none;
 }
-.vas-admin-menu-visible 
-.vas-admin-menu-item[data-isactive='true'] {
+.vas-admin-menu-visible .vas-admin-menu-item[data-isactive="true"] {
   color: green !important;
   font-weight: bold;
 }
-.vas-admin-menu-visible 
-.vas-admin-menu-item:hover {
-  background:grey;
-  color:white;
+.vas-admin-menu-visible .vas-admin-menu-item:hover {
+  background: grey;
+  color: white;
 }
 .vas-menu-clickguard {
   position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: black;
-  opacity:.1;
+  opacity: 0.1;
 }
 .vas-admin-aggregation-container {
-  margin-top:15px;
+  margin-top: 15px;
 }
 .vas-admin-aggregation-section {
-  margin-bottom:15px;
+  margin-bottom: 15px;
 }
 .vas-admin-aggregation-section h2 {
   font-weight: bold;
-  margin-bottom:5px;
-  text-decoration:underline;
-  font-size:115%;
+  margin-bottom: 5px;
+  text-decoration: underline;
+  font-size: 115%;
 }
 .vas-admin-aggregation-inner-container-insertion,
 .vas-admin-aggregation-inner-container-hospitals {
   display: flex;
-  font-size:110%;
+  font-size: 110%;
   border-bottom: dashed 1px grey;
-  width:230px;
+  width: 230px;
 }
-.vas-admin-aggregation-inner-container-left{
+.vas-admin-aggregation-inner-container-left {
   font-weight: bold;
 }
-.vas-admin-aggregation-inner-container-right{
-  margin:0 auto;
-  margin-right:0;
+.vas-admin-aggregation-inner-container-right {
+  margin: 0 auto;
+  margin-right: 0;
 }
 .vas-admin-custom-route {
-  margin:10px 0;
+  margin: 10px 0;
 }
-.vas-admin-custom-route button{
-  margin-left:10px;
+.vas-admin-custom-route button {
+  margin-left: 10px;
 }
 .vas-admin-active-btn {
   line-height: 10px !important;
 }
 .vas-admin-reverse-sort-users {
-  float:right;
-  margin-bottom:8px;
+  float: right;
+  margin-bottom: 8px;
 }
 .vas-admin-active-btn-inactive {
   background: red !important;
@@ -326,13 +323,13 @@
   text-shadow: none !important;
 }
 .vas-admin-allow-admin-access-dropdown {
-  display:block;
+  display: block;
 }
 .vas-admin-update-admin-user-container {
-  margin-bottom:15px;
+  margin-bottom: 15px;
 }
 .vas-admin-update-admin-credentials-container {
-  padding-top:15px;
+  padding-top: 15px;
 }
 .vas-admin-update-admin-credentials-container h3 {
   margin-bottom: 10px;
@@ -341,7 +338,7 @@
   text-decoration: underline;
 }
 .vas-admin-update-admin-credentials-container label {
-  display:block;
+  display: block;
 }
 .vas-admin-update-admin-credentials-container input {
   border-radius: 5px;
@@ -351,17 +348,16 @@
 }
 @media (max-width: 650px) {
   .vas-admin-menu {
-    display:none;
+    display: none;
   }
   .vas-admin-menu-toggle {
-    display:inline-block;
+    display: inline-block;
   }
 }
 @media print {
   .vas-main-header,
   .vas-filters,
-  .vas-table-thead-row
-  .vas-returned-procedures-show-hide-toggle-container {
-    display:none !important;
+  .vas-table-thead-row .vas-returned-procedures-show-hide-toggle-container {
+    display: none !important;
   }
 }

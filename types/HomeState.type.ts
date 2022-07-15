@@ -3,7 +3,7 @@ import { Procedure } from "./Procedure.type";
 import { User } from "./User.type";
 
 export interface HomeState {
-  activeHomeTab: string;
+  activeTab: string;
   activeCall: undefined | Call;
   completedCalls: Call[];
   confirmationType: undefined | string;
@@ -21,7 +21,7 @@ export interface HomeState {
 }
 
 export const HomeStateDefault = {
-  activeHomeTab: "queue",
+  activeTab: "queue",
   activeCall: undefined,
   completedCalls: [] as Call[],
   confirmationType: undefined,

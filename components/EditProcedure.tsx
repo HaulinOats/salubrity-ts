@@ -14,18 +14,18 @@ import DatePicker from "react-datepicker";
 import { DebounceInput } from "react-debounce-input";
 import { Call } from "../types/Call.type";
 import { User } from "../types/User.type";
-import { Modal as ModalType } from "../types/Modal.type";
+import { ModalState } from "../types/ModalState.type";
 import { RefData } from "../pages";
 
 interface EditProcedureProps {
-  modalState: ModalType;
+  modalState: ModalState;
   activeCall: Call;
   closeRecordCallback: (shouldDelete?: boolean) => void;
   user: User;
   refreshUserSession: () => void;
   saveActiveCall: (record: Call | undefined) => void;
-  closeModal: (modalObj: { call?: Call; modalData?: ModalType }) => void;
-  updateModal: (modalData: ModalType) => void;
+  closeModal: (modalObj: { call?: Call; modalData?: ModalState }) => void;
+  updateModalState: (modalData: ModalState) => void;
 }
 
 interface EditProcedureState {
@@ -183,7 +183,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const deleteCall = () => {
-    props.updateModal({
+    props.updateModalState({
       content: {
         title: "Delete Active Record?",
         message: "Are you sure you want to delete the currently active record?",
@@ -280,7 +280,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const procedureSaved = (isEdit: boolean) => {
-    props.updateModal({
+    props.updateModalState({
       content: {
         title: isEdit ? "Procedure Updated" : "Task Complete",
         message: isEdit
@@ -382,7 +382,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
     }
 
     if (errors.length) {
-      props.updateModal({
+      props.updateModalState({
         content: {
           title: "Cannot Submit Procedure",
           message: errors,
@@ -396,7 +396,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const resetForm = () => {
-    props.updateModal({
+    props.updateModalState({
       content: {
         title: "Reset Form?",
         message:
@@ -412,7 +412,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const resetModal = () => {
-    props.updateModal({
+    props.updateModalState({
       content: undefined,
       confirmation: false,
       autoClose: false,
@@ -633,7 +633,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const saveDressingChangeDate = (e: React.MouseEvent) => {
-    props.updateModal({
+    props.updateModalState({
       content: {
         title: "Set Future Dressing Change Date?",
         message:
@@ -655,7 +655,7 @@ const EditProcedure: React.FC<EditProcedureProps> = (
   };
 
   const closeLineType = () => {
-    props.updateModal({
+    props.updateModalState({
       content: {
         title: "Close Line Type?",
         message:

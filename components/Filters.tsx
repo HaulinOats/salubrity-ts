@@ -8,7 +8,7 @@ import moment, { Moment } from "moment";
 import { Call } from "../types/Call.type";
 
 interface FiltersProps {
-  returnedCalls: (aggObj: { calls: Call[]; aggregation: any }) => void;
+  returnedCalls?: (aggObj: { calls: Call[]; aggregation: any }) => void;
   hideUI: () => void;
   toggleHideUI: () => void;
   shouldHideUI: boolean;
@@ -60,22 +60,19 @@ const Filters: React.FC<FiltersProps> = (props) => {
     let hospitalOptions: { value: string | number; text: string }[] = [
       { value: "Erlanger", text: "Erlanger (All)" },
     ];
-    for (let i = 0; i < refData.hospitals!.options!.length; i++) {
+    refData.hospitals?.options?.forEach((_option, i) => {
       hospitalOptions.push({
         value: refData.hospitals!.options![i].id,
         text: refData.hospitals!.options![i].name,
       });
-    }
-    let procedureOptions = [];
-    for (let i = 0; i < refData.procedures.length; i++) {
-      if (refData.procedures[i].procedureId !== 10) {
-        //if PIV (2nd) procedure, don't add to options dropdown
-        procedureOptions.push({
-          value: refData.procedures[i].procedureId,
-          text: refData.procedures[i].name,
-        });
-      }
-    }
+    });
+    let procedureOptions: any = [];
+    refData.procedures.forEach((_procedure, i) => {
+      procedureOptions.push({
+        value: refData.procedures[i].procedureId,
+        text: refData.procedures[i].name,
+      });
+    });
     let insertionTypeOptions: { value: string | number; text: string }[] = [];
     refData.items.forEach((item) => {
       if (refData.itemsById![item.itemId].groupName === "Insertion Type") {
@@ -85,13 +82,13 @@ const Filters: React.FC<FiltersProps> = (props) => {
         });
       }
     });
-    let orderChangeOptions = [];
-    for (let i = 0; i < refData.orderChanges!.options!.length; i++) {
+    let orderChangeOptions: any = [];
+    refData.orderChanges?.options?.forEach((_option, i) => {
       orderChangeOptions.push({
         value: refData.orderChanges!.options![i].id,
         text: refData.orderChanges!.options![i].name,
       });
-    }
+    });
     setFiltersState({
       ...filtersState,
       filterFields: [
@@ -204,6 +201,7 @@ const Filters: React.FC<FiltersProps> = (props) => {
         if (!resp.data.calls) {
           alert("no calls returned for that specific query");
         } else {
+          if (!props.returnedCalls) return;
           props.returnedCalls(resp.data);
         }
       })

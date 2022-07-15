@@ -4,6 +4,7 @@ import { DropdownOption } from "../types/DropdownOption.type";
 import { Item } from "../types/Item.type";
 import { Option } from "../types/Option.type";
 import { Procedure } from "../types/Procedure.type";
+import { User } from "../types/User.type";
 
 export default {
   getDateFromObjectId: (objId: string) => {
@@ -45,7 +46,10 @@ export default {
       });
   },
 
-  adminGetAllUsers: async (): Promise<any> => {
+  adminGetAllUsers: async (): Promise<{
+    users: User[];
+    usersById: { [key: number]: User };
+  }> => {
     return axios
       .post("/api/main", { path: "/admin-get-all-users" })
       .then((resp) => {
